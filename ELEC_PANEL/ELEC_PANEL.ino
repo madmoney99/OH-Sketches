@@ -42,34 +42,23 @@
  **************************************************************************************/
 
 
-/*** @file INTR_LIGHTS.ino>
+/*** @file ELEC_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 8-22>
- * @brief <INTR LIGHT DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 9-22>
+ * @brief <ELEC PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
  * <Put a more detailed description of the sketch here>
+ * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
 #include "DcsBios.h"
-#define chartDimmerPin A1
-#define warnCautionDimmerPin A2
-#define lightsTestSwPin A3
-#define cockkpitLightModeSwPinA 2
-#define cockkpitLightModeSwPinB 3
-#define consolesDimmerPin A7
-#define instPnlDimmerPin A8
-#define floodDimmerPin A10
 
 /* paste code snippets from the reference documentation here */
-DcsBios::PotentiometerEWMA<5, 128, 50> chartDimmer("CHART_DIMMER", chartDimmerPin);
-DcsBios::PotentiometerEWMA<5, 128, 50> warnCautionDimmer("WARN_CAUTION_DIMMER", warnCautionDimmerPin);
-DcsBios::Switch2Pos lightsTestSw("LIGHTS_TEST_SW", lightsTestSwPin, true);
-DcsBios::Switch3Pos cockkpitLightModeSw("COCKKPIT_LIGHT_MODE_SW", cockkpitLightModeSwPinA, cockkpitLightModeSwPinB);
-DcsBios::PotentiometerEWMA<5, 128, 50> consolesDimmer("CONSOLES_DIMMER", consolesDimmerPin);
-DcsBios::PotentiometerEWMA<5, 128, 50> instPnlDimmer("INST_PNL_DIMMER", instPnlDimmerPin);
-DcsBios::PotentiometerEWMA<5, 128, 50> floodDimmer("FLOOD_DIMMER", floodDimmerPin);
+DcsBios::Switch2Pos lGenSw("L_GEN_SW", A3, true);
+DcsBios::Switch3Pos batterySw("BATTERY_SW", 3, A2);
+DcsBios::Switch2Pos rGenSw("R_GEN_SW", 4, true);
 
 void setup() {
   DcsBios::setup();
@@ -78,4 +67,3 @@ void setup() {
 void loop() {
   DcsBios::loop();
 }
-

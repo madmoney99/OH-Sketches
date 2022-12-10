@@ -42,34 +42,26 @@
  **************************************************************************************/
 
 
-/*** @file INTR_LIGHTS.ino>
+/*** @file KY58_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 8-22>
- * @brief <INTR LIGHT DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 9-22>
+ * @brief <KY58 PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
  * <Put a more detailed description of the sketch here>
+ * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
 #include "DcsBios.h"
-#define chartDimmerPin A1
-#define warnCautionDimmerPin A2
-#define lightsTestSwPin A3
-#define cockkpitLightModeSwPinA 2
-#define cockkpitLightModeSwPinB 3
-#define consolesDimmerPin A7
-#define instPnlDimmerPin A8
-#define floodDimmerPin A10
 
 /* paste code snippets from the reference documentation here */
-DcsBios::PotentiometerEWMA<5, 128, 50> chartDimmer("CHART_DIMMER", chartDimmerPin);
-DcsBios::PotentiometerEWMA<5, 128, 50> warnCautionDimmer("WARN_CAUTION_DIMMER", warnCautionDimmerPin);
-DcsBios::Switch2Pos lightsTestSw("LIGHTS_TEST_SW", lightsTestSwPin, true);
-DcsBios::Switch3Pos cockkpitLightModeSw("COCKKPIT_LIGHT_MODE_SW", cockkpitLightModeSwPinA, cockkpitLightModeSwPinB);
-DcsBios::PotentiometerEWMA<5, 128, 50> consolesDimmer("CONSOLES_DIMMER", consolesDimmerPin);
-DcsBios::PotentiometerEWMA<5, 128, 50> instPnlDimmer("INST_PNL_DIMMER", instPnlDimmerPin);
-DcsBios::PotentiometerEWMA<5, 128, 50> floodDimmer("FLOOD_DIMMER", floodDimmerPin);
+const byte ky58ModeSelectPins[7] = {A3, 2, A2, 3}
+;DcsBios::SwitchMultiPos ky58ModeSelect("KY58_MODE_SELECT", ky58ModeSelectPins, 7);
+DcsBios::Switch3Pos ky58PowerSelect("KY58_POWER_SELECT", A1, 4);
+DcsBios::PotentiometerEWMA<5, 128, 50> ky58Volume("KY58_VOLUME", A0);
+const byte ky58FillSelectPins[15] = {15, 6, 14, 7, 16, 8, 10, 9}
+;DcsBios::SwitchMultiPos ky58FillSelect("KY58_FILL_SELECT", ky58FillSelectPins, 15);
 
 void setup() {
   DcsBios::setup();
@@ -78,4 +70,3 @@ void setup() {
 void loop() {
   DcsBios::loop();
 }
-
