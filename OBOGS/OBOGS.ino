@@ -60,7 +60,7 @@ DcsBios::Switch2Pos obogsSw("OBOGS_SW", A3, true);
 //DcsBios::PotentiometerEWMA<5, 128, 5> oxyFlow("OXY_FLOW", PIN);
 //NUC WPN Panel
 //MC-HYD Panel
-DcsBios::Switch3Pos mcSw("MC_SW", 3, A1);
+DcsBios::Switch3Pos mcSw("MC_SW", A1, 3);
 DcsBios::Switch2Pos hydIsolateOverrideSw("HYD_ISOLATE_OVERRIDE_SW", 4, true);
 
 
