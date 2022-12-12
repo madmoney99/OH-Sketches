@@ -42,12 +42,12 @@
  **************************************************************************************/
 
 
-/*** @file APU_PANEL.ino>
+/*** @file SPIN_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <APU PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 11-22>
+ * @brief <SPIN_PANEL DCS BIOS>
  *
- * <No Mag switch, relay or circuit breakers set up yet.>
+ *
  * 
  */
 
@@ -56,9 +56,11 @@
 #include "DcsBios.h"
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", 15, true);
-DcsBios::LED apuReadyLt(0x74bc, 0x0400, 6);
-DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", 14, 7);
+
+DcsBios::PotentiometerEWMA<5, 128, 5> hmdOffBrt("HMD_OFF_BRT", A3);
+DcsBios::Switch3Pos irCoolSw("IR_COOL_SW", D2, A2);
+DcsBios::Switch2Pos spinRecoverySw("SPIN_RECOVERY_SW", D3);
+
 
 void setup() {
   DcsBios::setup();

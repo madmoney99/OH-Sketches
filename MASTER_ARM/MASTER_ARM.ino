@@ -42,12 +42,12 @@
  **************************************************************************************/
 
 
-/*** @file APU_PANEL.ino>
+/*** @file MASTER_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <APU PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 11-22>
+ * @brief <MASTER_PANEL DCS BIOS>
  *
- * <No Mag switch, relay or circuit breakers set up yet.>
+ *
  * 
  */
 
@@ -56,9 +56,20 @@
 #include "DcsBios.h"
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", 15, true);
-DcsBios::LED apuReadyLt(0x74bc, 0x0400, 6);
-DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", 14, 7);
+DcsBios::Switch2Pos fireExtBtn("FIRE_EXT_BTN", PIN);
+DcsBios::Switch2Pos masterModeAg("MASTER_MODE_AG", A2);
+DcsBios::Switch2Pos emerJettBtn("EMER_JETT_BTN", A1);
+DcsBios::Switch2Pos masterModeAa("MASTER_MODE_AA", 2);
+DcsBios::Switch2Pos masterArmSw("MASTER_ARM_SW", 3);
+
+
+/*To be sorted out, backlighting?
+DcsBios::LED mcReady(0x740c, 0x8000, A3);
+DcsBios::LED masterModeAaLt(0x740c, 0x0200, PIN);
+DcsBios::LED masterModeAgLt(0x740c, 0x0400, PIN);
+DcsBios::LED mcDisch(0x740c, 0x4000, PIN);
+
+*/
 
 void setup() {
   DcsBios::setup();

@@ -47,7 +47,9 @@
  * @date <Dec 9-22>
  * @brief <FCS PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
- * <Put a more detailed description of the sketch here>
+ *Changes from OH Standard:
+  Gain switch not working in ORIDE pos
+  trim POT was replaced with a rotary encoder with button press on top.
  * 
  */
 
@@ -56,10 +58,12 @@
 #include "DcsBios.h"
 
 /* paste code snippets from the reference documentation here */
-DcsBios::PotentiometerEWMA<5, 128, 50> rudTrim("RUD_TRIM", A3);
+DcsBios::RotaryEncoder rudTrim("RUD_TRIM", "-400", "+400", A3, 4);
 DcsBios::Switch2Pos toTrimBtn("TO_TRIM_BTN", 2);
 DcsBios::Switch2Pos fcsResetBtn("FCS_RESET_BTN", A2);
-DcsBios::Switch2Pos gainSwitch("GAIN_SWITCH", A1);
+DcsBios::Switch2Pos gainSwitchCover("GAIN_SWITCH_COVER", 15, true);
+const byte gainSwitchPins[3] = {14, 15}
+;DcsBios::SwitchMultiPos gainSwitch("GAIN_SWITCH", gainSwitchPins, 3);
 
 void setup() {
   DcsBios::setup();

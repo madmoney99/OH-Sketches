@@ -42,12 +42,12 @@
  **************************************************************************************/
 
 
-/*** @file APU_PANEL.ino>
+/*** @file IFEI_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <APU PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
- *
- * <No Mag switch, relay or circuit breakers set up yet.>
+ * @date <Dec 11-22>
+ * @brief <IFEI_PANEL DCS BIOS>
+ * NON STANDARD
+ * Missing JETT SELECT RI, RO, LI, LO, CTR as there is a Tekcreationz panel there.
  * 
  */
 
@@ -56,9 +56,18 @@
 #include "DcsBios.h"
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", 15, true);
-DcsBios::LED apuReadyLt(0x74bc, 0x0400, 6);
-DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", 14, 7);
+DcsBios::Switch2Pos ifeiUpBtn("IFEI_UP_BTN", 2);
+DcsBios::Switch2Pos ifeiQtyBtn("IFEI_QTY_BTN", 3);
+DcsBios::Switch2Pos ifeiModeBtn("IFEI_MODE_BTN", 4);
+
+DcsBios::Switch2Pos ifeiDwnBtn("IFEI_DWN_BTN", 7);
+DcsBios::Switch2Pos ifeiZoneBtn("IFEI_ZONE_BTN", 8);
+DcsBios::Switch2Pos ifeiEtBtn("IFEI_ET_BTN", 9);
+
+DcsBios::PotentiometerEWMA<5, 128, 50> ifei("IFEI", A3);
+DcsBios::Switch3Pos modeSelectorSw("MODE_SELECTOR_SW", 15, 14);
+DcsBios::Switch3Pos selectHudLddiRddi("SELECT_HUD_LDDI_RDDI", A10, 16);
+
 
 void setup() {
   DcsBios::setup();
