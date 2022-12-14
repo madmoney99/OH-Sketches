@@ -42,12 +42,11 @@
  **************************************************************************************/
 
 
-/*** @file ELEC_PANEL.ino>
+/*** @file OBOGS_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <ELEC PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 11-22>
+ * @brief <OBOGS_PANEL DCS BIOS>
  *
- * <Put a more detailed description of the sketch here>
  * 
  */
 
@@ -56,9 +55,14 @@
 #include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos lGenSw("L_GEN_SW", A3, true);
-DcsBios::Switch3Pos batterySw("BATTERY_SW", 3, A2);
-DcsBios::Switch2Pos rGenSw("R_GEN_SW", 4, true);
+//OBOGS Panel
+DcsBios::Switch2Pos obogsSw("OBOGS_SW", A3, true);
+//DcsBios::PotentiometerEWMA<5, 128, 5> oxyFlow("OXY_FLOW", PIN);
+//NUC WPN Panel
+//MC-HYD Panel
+DcsBios::Switch3Pos mcSw("MC_SW", A1, 3);
+DcsBios::Switch2Pos hydIsolateOverrideSw("HYD_ISOLATE_OVERRIDE_SW", 4, true);
+
 
 void setup() {
   DcsBios::setup();

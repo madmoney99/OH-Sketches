@@ -42,12 +42,12 @@
  **************************************************************************************/
 
 
-/*** @file ELEC_PANEL.ino>
+/*** @file APU_PANEL.ino>
 /** @author <Tony Goodale>
  * @date <Dec 9-22>
- * @brief <ELEC PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @brief <APU PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
- * <Put a more detailed description of the sketch here>
+ * <No Mag switch, relay or circuit breakers set up yet.>
  * 
  */
 
@@ -56,9 +56,9 @@
 #include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos lGenSw("L_GEN_SW", A3, true);
-DcsBios::Switch3Pos batterySw("BATTERY_SW", 3, A2);
-DcsBios::Switch2Pos rGenSw("R_GEN_SW", 4, true);
+DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", 15, true);
+DcsBios::LED apuReadyLt(0x74bc, 0x0400, 6);
+DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", 14, 7);
 
 void setup() {
   DcsBios::setup();
