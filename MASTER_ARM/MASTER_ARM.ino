@@ -53,10 +53,10 @@
 
 #define DCSBIOS_DEFAULT_SERIAL
 
-#include "DcsBios.h"
+#include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos fireExtBtn("FIRE_EXT_BTN", PIN);
+DcsBios::Switch2Pos fireExtBtn("FIRE_EXT_BTN", A3);
 DcsBios::Switch2Pos masterModeAg("MASTER_MODE_AG", A2);
 DcsBios::Switch2Pos emerJettBtn("EMER_JETT_BTN", A1);
 DcsBios::Switch2Pos masterModeAa("MASTER_MODE_AA", 2);
