@@ -59,7 +59,7 @@
 const byte ky58ModeSelectPins[4] = {A3, 2, A2, 3};
 DcsBios::SwitchMultiPos ky58ModeSelect("KY58_MODE_SELECT", ky58ModeSelectPins, 4);
 DcsBios::Switch3Pos ky58PowerSelect("KY58_POWER_SELECT", A1, 4);
-DcsBios::Potentiometer ky58Volume("KY58_VOLUME", A10);
+DcsBios::Potentiometer ky58Volume("KY58_VOLUME", A0);
 
 const byte ky58FillSelectPins[8] = {15, 6, 14, 7, 16, 8, 10, 9};
 DcsBios::SwitchMultiPos ky58FillSelect("KY58_FILL_SELECT", ky58FillSelectPins, 8);

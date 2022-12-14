@@ -59,7 +59,7 @@
 DcsBios::Switch3Pos flirSw("FLIR_SW", A3, A2);
 DcsBios::Switch2Pos ltdRSw("LTD_R_SW", 3);
 DcsBios::Switch2Pos lstNflrSw("LST_NFLR_SW", 15);
-const byte radarSwPins[4] = { 2, A1, 4, A0 };
+const byte radarSwPins[4] = {PIN0 , A1, 4, A0 };
 DcsBios::SwitchMultiPos radarSw("RADAR_SW", radarSwPins, 4);
 const byte insSwPins[8] = { 2, 6, 14, 7, 16, 8, 10, 9 };
 DcsBios::SwitchMultiPos insSw("INS_SW", insSwPins, 8);
