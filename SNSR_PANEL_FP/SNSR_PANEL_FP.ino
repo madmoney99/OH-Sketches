@@ -42,13 +42,13 @@
  **************************************************************************************/
 
 
-/*** @file ELEC_PANEL.ino>
+/*** @file SNSR_PANEL.ino>
 /** @author <Tony Goodale>
  * @date <Dec 9-22>
- * @brief <ELEC PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @brief <SNSR PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
  * <Put a more detailed description of the sketch here>
- * 
+ * Both rotary switches call for all positions (8 and 4 respectively) to be used.  Pro Micro doesn't have enough spots so I've declared both off positions to pin 2, the only remaining pin on the board.
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
@@ -56,9 +56,13 @@
 #include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos lGenSw("L_GEN_SW", A3, true);
-DcsBios::Switch3Pos batterySw("BATTERY_SW", 3, A2);
-DcsBios::Switch2Pos rGenSw("R_GEN_SW", 4, true);
+DcsBios::Switch3Pos flirSw("FLIR_SW", A3, A2);
+DcsBios::Switch2Pos ltdRSw("LTD_R_SW", 3);
+DcsBios::Switch2Pos lstNflrSw("LST_NFLR_SW", 15);
+const byte radarSwPins[4] = { 2, A1, 4, A0 };
+DcsBios::SwitchMultiPos radarSw("RADAR_SW", radarSwPins, 4);
+const byte insSwPins[8] = { 2, 6, 14, 7, 16, 8, 10, 9 };
+DcsBios::SwitchMultiPos insSw("INS_SW", insSwPins, 8);
 
 void setup() {
   DcsBios::setup();

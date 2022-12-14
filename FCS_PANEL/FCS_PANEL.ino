@@ -55,15 +55,14 @@
 
 #define DCSBIOS_DEFAULT_SERIAL
 
-#include "DcsBios.h"
+#include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
 DcsBios::RotaryEncoder rudTrim("RUD_TRIM", "-400", "+400", A3, 4);
 DcsBios::Switch2Pos toTrimBtn("TO_TRIM_BTN", 2);
 DcsBios::Switch2Pos fcsResetBtn("FCS_RESET_BTN", A2);
 DcsBios::Switch2Pos gainSwitchCover("GAIN_SWITCH_COVER", 15, true);
-const byte gainSwitchPins[3] = {14, 15}
-;DcsBios::SwitchMultiPos gainSwitch("GAIN_SWITCH", gainSwitchPins, 3);
+DcsBios::Switch2Pos gainSwitch("GAIN_SWITCH", 14);
 
 void setup() {
   DcsBios::setup();

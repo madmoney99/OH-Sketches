@@ -42,10 +42,10 @@
  **************************************************************************************/
 
 
-/*** @file ELEC_PANEL.ino>
+/*** @file KY58_PANEL.ino>
 /** @author <Tony Goodale>
  * @date <Dec 9-22>
- * @brief <ELEC PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @brief <KY58 PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
  * <Put a more detailed description of the sketch here>
  * 
@@ -56,9 +56,13 @@
 #include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos lGenSw("L_GEN_SW", A3, true);
-DcsBios::Switch3Pos batterySw("BATTERY_SW", 3, A2);
-DcsBios::Switch2Pos rGenSw("R_GEN_SW", 4, true);
+const byte ky58ModeSelectPins[4] = {A3, 2, A2, 3};
+DcsBios::SwitchMultiPos ky58ModeSelect("KY58_MODE_SELECT", ky58ModeSelectPins, 4);
+DcsBios::Switch3Pos ky58PowerSelect("KY58_POWER_SELECT", A1, 4);
+DcsBios::Potentiometer ky58Volume("KY58_VOLUME", A10);
+
+const byte ky58FillSelectPins[8] = {15, 6, 14, 7, 16, 8, 10, 9};
+DcsBios::SwitchMultiPos ky58FillSelect("KY58_FILL_SELECT", ky58FillSelectPins, 8);
 
 void setup() {
   DcsBios::setup();
