@@ -57,7 +57,7 @@
 
 /* paste code snippets from the reference documentation here */
 DcsBios::Switch2Pos cmsdJetSelBtn("CMSD_JET_SEL_BTN", 15);
-const byte ecmModeSwPins[5] = {A0, 6, 14, 7, 16};
+const byte ecmModeSwPins[5] = {4, 6, 14, 7, 16};
 DcsBios::SwitchMultiPos ecmModeSw("ECM_MODE_SW", ecmModeSwPins, 5);
 DcsBios::Switch3Pos cmsdDispenseSw("CMSD_DISPENSE_SW", 8, 10);
 DcsBios::Switch2Pos auxRelSw("AUX_REL_SW", 9);
