@@ -59,13 +59,12 @@
 /* FROM BOARD*/
 DcsBios::Potentiometer rwrAudioCtrl("RWR_AUDIO_CTRL", A3);
 DcsBios::Potentiometer rwrDmrCtrl("RWR_DMR_CTRL", A2);
-DcsBios::Switch2Pos rwrSpecialBtn("RWR_SPECIAL_BTN", A1);
-DcsBios::Switch2Pos rwrBitBtn("RWR_BIT_BTN", A0);
+DcsBios::ActionButton rwrSpecialBtnToggle("RWR_SPECIAL_BTN", "TOGGLE", A1);
+DcsBios::ActionButton rwrBitBtnToggle("RWR_BIT_BTN", "TOGGLE", A0);
 
-DcsBios::Switch2Pos rwrPowerBtn("RWR_POWER_BTN", 2);
-DcsBios::Switch2Pos rwrLimitBtn("RWR_LIMIT_SW", 3);
-DcsBios::Switch2Pos rwrOffsetBtn("RWR_OFFSET_BTN", 4);
-
+DcsBios::ActionButton rwrPowerBtnToggle("RWR_POWER_BTN", "TOGGLE", 2);
+DcsBios::ActionButton rwrLimitBtnToggle("RWR_LIMIT_SW", "TOGGLE", 3);
+DcsBios::ActionButton rwrOffsetBtnToggle("RWR_OFFSET_BTN", "TOGGLE", 4);
 const byte rwrDisTypeSwPins[5] = {15, 6, 14, 7, 16};
 DcsBios::SwitchMultiPos rwrDisTypeSw("RWR_DIS_TYPE_SW", rwrDisTypeSwPins, 5);
 
