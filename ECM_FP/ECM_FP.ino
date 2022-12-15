@@ -42,10 +42,10 @@
  **************************************************************************************/
 
 
-/*** @file MASTER_PANEL.ino>
+/*** @file DISP_ECM_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 11-22>
- * @brief <MASTER_PANEL DCS BIOS>
+ * @date <Dec 14-22>
+ * @brief <DISP_ECM DCS BIOS>
  *
  *
  * 
@@ -56,20 +56,11 @@
 #include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos fireExtBtn("FIRE_EXT_BTN", A3);
-DcsBios::Switch2Pos masterModeAg("MASTER_MODE_AG", A2);
-DcsBios::Switch2Pos emerJettBtn("EMER_JETT_BTN", A1);
-DcsBios::Switch2Pos masterModeAa("MASTER_MODE_AA", 2);
-DcsBios::Switch2Pos masterArmSw("MASTER_ARM_SW", 3);
-
-
-/*To be sorted out, backlighting?
-DcsBios::LED mcReady(0x740c, 0x8000, A3);
-DcsBios::LED masterModeAaLt(0x740c, 0x0200, PIN);
-DcsBios::LED masterModeAgLt(0x740c, 0x0400, PIN);
-DcsBios::LED mcDisch(0x740c, 0x4000, PIN);
-
-*/
+DcsBios::Switch2Pos cmsdJetSelBtn("CMSD_JET_SEL_BTN", 15);
+const byte ecmModeSwPins[5] = {4, 6, 14, 7, 16};
+DcsBios::SwitchMultiPos ecmModeSw("ECM_MODE_SW", ecmModeSwPins, 5);
+DcsBios::Switch3Pos cmsdDispenseSw("CMSD_DISPENSE_SW", 8, 10);
+DcsBios::Switch2Pos auxRelSw("AUX_REL_SW", 9);
 
 void setup() {
   DcsBios::setup();

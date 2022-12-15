@@ -42,10 +42,10 @@
  **************************************************************************************/
 
 
-/*** @file MASTER_PANEL.ino>
+/*** @file RWR_PANEL.ino>
 /** @author <Tony Goodale>
  * @date <Dec 11-22>
- * @brief <MASTER_PANEL DCS BIOS>
+ * @brief <RWR_PANEL DCS BIOS>
  *
  *
  * 
@@ -56,20 +56,18 @@
 #include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos fireExtBtn("FIRE_EXT_BTN", A3);
-DcsBios::Switch2Pos masterModeAg("MASTER_MODE_AG", A2);
-DcsBios::Switch2Pos emerJettBtn("EMER_JETT_BTN", A1);
-DcsBios::Switch2Pos masterModeAa("MASTER_MODE_AA", 2);
-DcsBios::Switch2Pos masterArmSw("MASTER_ARM_SW", 3);
+/* FROM BOARD*/
+DcsBios::Potentiometer rwrAudioCtrl("RWR_AUDIO_CTRL", A3);
+DcsBios::Potentiometer rwrDmrCtrl("RWR_DMR_CTRL", A2);
+DcsBios::Switch2Pos rwrSpecialBtn("RWR_SPECIAL_BTN", A1);
+DcsBios::Switch2Pos rwrBitBtn("RWR_BIT_BTN", A0);
 
+DcsBios::Switch2Pos rwrPowerBtn("RWR_POWER_BTN", 2);
+DcsBios::Switch2Pos rwrLimitBtn("RWR_LIMIT_SW", 3);
+DcsBios::Switch2Pos rwrOffsetBtn("RWR_OFFSET_BTN", 4);
 
-/*To be sorted out, backlighting?
-DcsBios::LED mcReady(0x740c, 0x8000, A3);
-DcsBios::LED masterModeAaLt(0x740c, 0x0200, PIN);
-DcsBios::LED masterModeAgLt(0x740c, 0x0400, PIN);
-DcsBios::LED mcDisch(0x740c, 0x4000, PIN);
-
-*/
+const byte rwrDisTypeSwPins[5] = {15, 6, 14, 7, 16};
+DcsBios::SwitchMultiPos rwrDisTypeSw("RWR_DIS_TYPE_SW", rwrDisTypeSwPins, 5);
 
 void setup() {
   DcsBios::setup();
