@@ -65,8 +65,8 @@ DcsBios::Switch3Pos cabinPressSw("CABIN_PRESS_SW", A1, 4);
 DcsBios::Switch2Pos pitotHeatSw("PITOT_HEAT_SW", A0, true);
 DcsBios::Switch3Pos engAntiiceSw("ENG_ANTIICE_SW", 15, 6);
 
-DcsBios::Potentiometer cabinTemp("CABIN_TEMP", A10);
-DcsBios::Potentiometer suitTemp("SUIT_TEMP", A9);
+DcsBios::Potentiometer cabinTemp("CABIN_TEMP", A9);
+DcsBios::Potentiometer suitTemp("SUIT_TEMP", A10);
 
 void setup() {
   DcsBios::setup();
