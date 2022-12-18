@@ -1,5 +1,3 @@
-
-
 /**************************************************************************************
  *        ____                   _    _                       _
  *       / __ \                 | |  | |                     | |
@@ -43,22 +41,19 @@
  *   
  **************************************************************************************/
 
-/**
- * @file <AMPCD.ino>
- * @author <@petersawka> <@dnamaster2000>
- * @date <2021-10-12>
- * @brief <Arduino Nano Code for Right DDI Controller>
+
+/*** @file APU_PANEL.ino>
+/** @author <Tony Goodale>
+ * @date <Dec 9-22>
+ * @brief <APU PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ *
+ * <No Mag switch, relay or circuit breakers set up yet.>
+ * 
  */
 
-// DCS Bios Configuration - No RS458 Communcation
 #define DCSBIOS_DEFAULT_SERIAL
 
-// DCS-BIOS Configuration for RS485
-//#define DCSBIOS_RS485_SLAVE 3
-//#define TXENABLE_PIN 2
-
 #include <DcsBios.h>
-
 //Setup the DDI Buttons - Use library from @Balse on Discord - https://github.com/balzreber/TCA9534
 #include <TCA9534.h>
 
@@ -68,7 +63,6 @@ TCA9534 ampcdButtons[4] = {
   TCA9534(0x22), //Right Row
   TCA9534(0x21)  //Bottom Row
 };
-
 bool lastBtnState[28];
 bool buttonState[28];
 uint8_t inputRegister[4];
@@ -84,18 +78,11 @@ char btnName[20];
 void onInstPnlDimmerChange(unsigned int newValue) {
     analogWrite(6,map(newValue,0,65535,0,100));
 }
-DcsBios::IntegerBuffer instPnlDimmerBuffer(0x7546, 0xffff, 0, onInstPnlDimmerChange);
-DcsBios::Potentiometer ampcdBrtCtl("AMPCD_BRT_CTL", A0);
 
+/* paste code snippets from the reference documentation here */
 DcsBios::Switch3Pos leftDdiCrsSw("LEFT_DDI_CRS_SW", 4, 7);
 DcsBios::Switch3Pos leftDdiHdgSw("LEFT_DDI_HDG_SW", 8, 10);
 
-/**
-* Arduino Setup Function
-* 
-* Arduino standard Setup Function. Code who should be executed
-* only once at the programm start, belongs in this function.
-*/
 void setup() {
   DcsBios::setup();
   pinMode(6, OUTPUT);
@@ -113,23 +100,26 @@ void setup() {
 analogWrite(6,75);
 }
 
-/**
-* Arduino Loop Function
-* 
-* Arduino standard Loop Function. Code who should be executed
-* over and over in a loop, belongs in this function.
-*/
 void loop() {
   DcsBios::loop();
-  
+
   for (int i = 0; i < sizeof(ampcdButtons) / sizeof(ampcdButtons[0]); i++) {
     inputRegister[i] = ampcdButtons[i].ReadAll();
+    // i == 0; Left
+    // i == 1; Top - Reversed (DDI v2)
+    // i == 2; Right - Reversed (DDI v2)
+    // i == 3; Bottom
 
-    for (int j = 0; j < 7; j++) {
+    for (int j = 0; j < 5; j++) {
+      int index; 
+      if(i== 1 || i == 2){
+         index = ((4-j) + 5 * i);
+      }else{
+         index = (j + 5 * i);
+      }
       
-      index = j+(7*i);
 
-      bool btnState = (inputRegister[i] >> (6 - j)) & 1;
+      bool btnState = (inputRegister[i] >> (4 - j)) & 1;
 
       if(btnState != lastBtnState[index]) {
         lastDebounceTime[index] = millis();
@@ -137,27 +127,15 @@ void loop() {
 
       if ((millis() - lastDebounceTime[index]) > debounceDelay) {
         if (btnState != buttonState[index]) {
-          buttonState[index] = btnState;
-          if (j>4){
-            if(btnState!=1){
-              if (i==0 or i==1){
-                if(j==5){ DcsBios::tryToSendDcsBiosMessage(AMPCD_Btns[i], "2"); }
-                if(j==6){ DcsBios::tryToSendDcsBiosMessage(AMPCD_Btns[i], "0"); } 
-              }else {
-                if(j==5){ DcsBios::tryToSendDcsBiosMessage(AMPCD_Btns[i], "0"); }
-                if(j==6){ DcsBios::tryToSendDcsBiosMessage(AMPCD_Btns[i], "2"); } 
-              }
-            }else{
-              DcsBios::tryToSendDcsBiosMessage(AMPCD_Btns[i], "1");
-            }
-          }else{
-            int btnNum = 4-j+5*i;
-            sprintf(btnName, "AMPCD_PB_%02d", btnNum + 1);
-            DcsBios::tryToSendDcsBiosMessage(btnName, btnState == 1 ? "0" : "1");
-          }
+            buttonState[index] = btnState;
+                  char btnName[15];
+                  sprintf(btnName, "AMPCD_PB_%02d", index + 1);
+                  DcsBios::tryToSendDcsBiosMessage(btnName, btnState == 1 ? "0" : "1");
         }
       }
       lastBtnState[index] = btnState;
-    }  
+    }
+    
+    
   }
 }
