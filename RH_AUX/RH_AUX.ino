@@ -42,12 +42,11 @@
  **************************************************************************************/
 
 
-/*** @file ELEC_PANEL.ino>
+/*** @file RH_AUX_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <ELEC PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 17-22>
+ * @brief <APU RH_AUX_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
- * <Put a more detailed description of the sketch here>
  * 
  */
 
@@ -56,9 +55,13 @@
 #include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos lGenSw("L_GEN_SW", 15, true);
-DcsBios::Switch3Pos batterySw("BATTERY_SW", 3, 14);
-DcsBios::Switch2Pos rGenSw("R_GEN_SW", 4, true);
+DcsBios::Switch2Pos avCoolSw("AV_COOL_SW", 15);
+
+DcsBios::Switch2Pos wingFoldPull("WING_FOLD_PULL", 6);
+DcsBios::Switch3Pos wingFoldRotate("WING_FOLD_ROTATE", 14, 7);
+
+DcsBios::Switch2Pos hookLever("HOOK_LEVER", 8, true);
+DcsBios::LED arrestingHookLt(0x74a0, 0x0400, 16);
 
 void setup() {
   DcsBios::setup();
