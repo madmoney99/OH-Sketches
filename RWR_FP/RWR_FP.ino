@@ -63,7 +63,7 @@ DcsBios::ActionButton rwrSpecialBtnToggle("RWR_SPECIAL_BTN", "TOGGLE", A1);
 DcsBios::ActionButton rwrBitBtnToggle("RWR_BIT_BTN", "TOGGLE", A0);
 
 DcsBios::ActionButton rwrPowerBtnToggle("RWR_POWER_BTN", "TOGGLE", 2);
-DcsBios::ActionButton rwrLimitBtnToggle("RWR_LIMIT_SW", "TOGGLE", 3);
+DcsBios::Switch2Pos rwrLimitBtn("RWR_LIMIT_SW", 3);
 DcsBios::ActionButton rwrOffsetBtnToggle("RWR_OFFSET_BTN", "TOGGLE", 4);
 const byte rwrDisTypeSwPins[5] = {15, 6, 14, 7, 16};
 DcsBios::SwitchMultiPos rwrDisTypeSw("RWR_DIS_TYPE_SW", rwrDisTypeSwPins, 5);
