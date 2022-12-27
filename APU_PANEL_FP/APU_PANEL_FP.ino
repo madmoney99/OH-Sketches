@@ -55,6 +55,13 @@
 
 #include <DcsBios.h>
 
+//HID Panel for APU PANEL
+
+#include <Joystick.h>
+
+Joystick_ Joystick;
+
+
 /* paste code snippets from the reference documentation here */
 DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", 15, true);
 DcsBios::LED apuReadyLt(0x74bc, 0x0400, 6);
@@ -62,8 +69,28 @@ DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", 14, 7);
 
 void setup() {
   DcsBios::setup();
+  // Initialize Button Pins
+  pinMode(14, INPUT_PULLUP);
+  pinMode(7, INPUT_PULLUP);
+  // Initialize Joystick Library
+  Joystick.begin();
 }
+// defining the total [#] of buttons and their pins
+const int ButtonToPinMap[2] = {4,7};
 
+int lastButtonState[2] = {0,0};
 void loop() {
   DcsBios::loop();
+
+  for (int index = 0; index < 15; index++)
+  {
+    int currentButtonState = !digitalRead(ButtonToPinMap[index]);
+    if (currentButtonState != lastButtonState[index])
+    {
+      Joystick.setButton(index, currentButtonState);
+      lastButtonState[index] = currentButtonState;
+    }
+  }
+
+  delay(50);
 }

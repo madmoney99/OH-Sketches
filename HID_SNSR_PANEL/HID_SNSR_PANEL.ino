@@ -42,28 +42,69 @@
  **************************************************************************************/
 
 
-/*** @file APU_PANEL.ino>
+/*** @file HID_SNSR_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <APU PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 26-22>
+ * @brief <HID_SNSR_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
- * <No Mag switch, relay or circuit breakers set up yet.>
+ * <Put a more detailed description of the sketch here>
  * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
-#include "DcsBios.h"
+#include <DcsBios.h>
+//HID Panel for SNSR PANEL
+#include <Joystick.h>
+Joystick_ Joystick;
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", 15, true);
-DcsBios::LED apuReadyLt(0x74bc, 0x0400, 6);
-DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", 14, 7);
+DcsBios::Switch3Pos flirSw("FLIR_SW", A3, A2);
+DcsBios::Switch2Pos ltdRSw("LTD_R_SW", 3);
+DcsBios::Switch2Pos lstNflrSw("LST_NFLR_SW", 15);
+const byte radarSwPins[4] = {PIN0 , A1, 4, A0 };
+DcsBios::SwitchMultiPos radarSw("RADAR_SW", radarSwPins, 4);
+const byte insSwPins[8] = { 2, 6, 14, 7, 16, 8, 10, 9 };
+DcsBios::SwitchMultiPos insSw("INS_SW", insSwPins, 8);
 
 void setup() {
   DcsBios::setup();
+  // Initialize Button Pins
+  pinMode(A3, INPUT_PULLUP);
+  pinMode(A2, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
+  pinMode(15, INPUT_PULLUP);
+  pinMode(A1, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
+  pinMode(A0, INPUT_PULLUP);
+  pinMode(2, INPUT_PULLUP);
+  pinMode(6, INPUT_PULLUP);
+  pinMode(14, INPUT_PULLUP);
+  pinMode(7, INPUT_PULLUP);
+  pinMode(16, INPUT_PULLUP);
+  pinMode(8, INPUT_PULLUP);
+  pinMode(10, INPUT_PULLUP);
+  pinMode(9, INPUT_PULLUP);
+  // Initialize Joystick Library
+  Joystick.begin();
 }
+
+// defining the total [#] of buttons and their pins
+#define numberOfButtons 15
+const int ButtonToPinMap[numberOfButtons] = {A3,A2,3,15,A1,4,A0,2,6,14,7,16,8,10,9};
+int lastButtonState[numberOfButtons] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 void loop() {
   DcsBios::loop();
+  for (int index = 0; index < numberOfButtons; index++)
+  {
+    int currentButtonState = !digitalRead(ButtonToPinMap[index]);
+    if (currentButtonState != lastButtonState[index])
+    {
+      Joystick.setButton(index, currentButtonState);
+      lastButtonState[index] = currentButtonState;
+    }
+  }
+
+  delay(50);
 }
