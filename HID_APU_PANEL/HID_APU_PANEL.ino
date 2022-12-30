@@ -59,7 +59,7 @@
 Joystick_ Joystick;
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", 15, true);
+DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", 15);
 DcsBios::LED apuReadyLt(0x74bc, 0x0400, 6);
 DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", 14, 7);
 
@@ -69,17 +69,19 @@ void setup() {
   pinMode(15, INPUT_PULLUP);
   pinMode(14, INPUT_PULLUP);
   pinMode(7, INPUT_PULLUP);
+  pinMode(16, INPUT_PULLUP);
   // Initialize Joystick Library
   Joystick.begin();
 }
 // defining the total [#] of buttons and their pins
-const int ButtonToPinMap[3] = {15,14,7};
-int lastButtonState[3] = {0,0,0};
+#define numberOfButtons 4
+const int ButtonToPinMap[numberOfButtons] = {15,14,7,16};
+int lastButtonState[numberOfButtons] = {0,0,0,0};
 
 void loop() {
   DcsBios::loop();
 
-  for (int index = 0; index < 3; index++)
+  for (int index = 0; index < numberOfButtons; index++)
   {
     int currentButtonState = !digitalRead(ButtonToPinMap[index]);
     if (currentButtonState != lastButtonState[index])
