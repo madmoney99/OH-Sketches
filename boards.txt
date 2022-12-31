@@ -472,7 +472,7 @@ apuleonardo.build.mcu=atmega32u4
 apuleonardo.build.f_cpu=16000000L
 apuleonardo.build.vid=0x2341
 apuleonardo.build.pid=0x8059
-apuleonardo.build.usb_product="APU PANEL"
+apuleonardo.build.usb_product="APU Panel"
 apuleonardo.build.board=AVR_LEONARDO
 apuleonardo.build.core=arduino
 apuleonardo.build.variant=leonardo
@@ -1038,6 +1038,57 @@ ECMleonardo.build.board=AVR_LEONARDO
 ECMleonardo.build.core=arduino
 ECMleonardo.build.variant=leonardo
 ECMleonardo.build.extra_flags={build.usb_flags}
+
+##############################################################
+
+marmleonardo.name=Master Arm
+marmleonardo.vid.0=0x2341
+marmleonardo.pid.0=0x0036
+marmleonardo.vid.1=0x2341
+marmleonardo.pid.1=0x8036
+marmleonardo.vid.2=0x2A03
+marmleonardo.pid.2=0x0036
+marmleonardo.vid.3=0x2A03
+marmleonardo.pid.3=0x8036
+marmleonardo.upload_port.0.vid=0x2341
+marmleonardo.upload_port.0.pid=0x0036
+marmleonardo.upload_port.1.vid=0x2341
+marmleonardo.upload_port.1.pid=0x8036
+marmleonardo.upload_port.2.vid=0x2A03
+marmleonardo.upload_port.2.pid=0x0036
+marmleonardo.upload_port.3.vid=0x2A03
+marmleonardo.upload_port.3.pid=0x8036
+marmleonardo.upload_port.4.board=leonardo
+
+marmleonardo.upload.tool=avrdude
+marmleonardo.upload.tool.default=avrdude
+marmleonardo.upload.tool.network=arduino_ota
+marmleonardo.upload.protocol=avr109
+marmleonardo.upload.maximum_size=28672
+marmleonardo.upload.maximum_data_size=2560
+marmleonardo.upload.speed=57600
+marmleonardo.upload.disable_flushing=true
+marmleonardo.upload.use_1200bps_touch=true
+marmleonardo.upload.wait_for_upload_port=true
+
+marmleonardo.bootloader.tool=avrdude
+marmleonardo.bootloader.tool.default=avrdude
+marmleonardo.bootloader.low_fuses=0xff
+marmleonardo.bootloader.high_fuses=0xd8
+marmleonardo.bootloader.extended_fuses=0xcb
+marmleonardo.bootloader.file=caterina/Caterina-Leonardo.hex
+marmleonardo.bootloader.unlock_bits=0x3F
+marmleonardo.bootloader.lock_bits=0x2F
+
+marmleonardo.build.mcu=atmega32u4
+marmleonardo.build.f_cpu=16000000L
+marmleonardo.build.vid=0x2341
+marmleonardo.build.pid=0x8061
+marmleonardo.build.usb_product="MasterArm"
+marmleonardo.build.board=AVR_LEONARDO
+marmleonardo.build.core=arduino
+marmleonardo.build.variant=leonardo
+marmleonardo.build.extra_flags={build.usb_flags}
 
 ##############################################################
 
