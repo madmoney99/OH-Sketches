@@ -990,6 +990,57 @@ OBOGSleonardo.build.extra_flags={build.usb_flags}
 
 ##############################################################
 
+ECMleonardo.name=ECM PANEL
+ECMleonardo.vid.0=0x2341
+ECMleonardo.pid.0=0x0036
+ECMleonardo.vid.1=0x2341
+ECMleonardo.pid.1=0x8036
+ECMleonardo.vid.2=0x2A03
+ECMleonardo.pid.2=0x0036
+ECMleonardo.vid.3=0x2A03
+ECMleonardo.pid.3=0x8036
+ECMleonardo.upload_port.0.vid=0x2341
+ECMleonardo.upload_port.0.pid=0x0036
+ECMleonardo.upload_port.1.vid=0x2341
+ECMleonardo.upload_port.1.pid=0x8036
+ECMleonardo.upload_port.2.vid=0x2A03
+ECMleonardo.upload_port.2.pid=0x0036
+ECMleonardo.upload_port.3.vid=0x2A03
+ECMleonardo.upload_port.3.pid=0x8036
+ECMleonardo.upload_port.4.board=leonardo
+
+ECMleonardo.upload.tool=avrdude
+ECMleonardo.upload.tool.default=avrdude
+ECMleonardo.upload.tool.network=arduino_ota
+ECMleonardo.upload.protocol=avr109
+ECMleonardo.upload.maximum_size=28672
+ECMleonardo.upload.maximum_data_size=2560
+ECMleonardo.upload.speed=57600
+ECMleonardo.upload.disable_flushing=true
+ECMleonardo.upload.use_1200bps_touch=true
+ECMleonardo.upload.wait_for_upload_port=true
+
+ECMleonardo.bootloader.tool=avrdude
+ECMleonardo.bootloader.tool.default=avrdude
+ECMleonardo.bootloader.low_fuses=0xff
+ECMleonardo.bootloader.high_fuses=0xd8
+ECMleonardo.bootloader.extended_fuses=0xcb
+ECMleonardo.bootloader.file=caterina/Caterina-Leonardo.hex
+ECMleonardo.bootloader.unlock_bits=0x3F
+ECMleonardo.bootloader.lock_bits=0x2F
+
+ECMleonardo.build.mcu=atmega32u4
+ECMleonardo.build.f_cpu=16000000L
+ECMleonardo.build.vid=0x2341
+ECMleonardo.build.pid=0x8060
+ECMleonardo.build.usb_product="ECM PANEL"
+ECMleonardo.build.board=AVR_LEONARDO
+ECMleonardo.build.core=arduino
+ECMleonardo.build.variant=leonardo
+ECMleonardo.build.extra_flags={build.usb_flags}
+
+##############################################################
+
 leonardoeth.name=Arduino Leonardo ETH
 leonardoeth.vid.0=0x2a03
 leonardoeth.pid.0=0x0040
