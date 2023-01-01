@@ -55,10 +55,10 @@
 #include <DcsBios.h>
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos avCoolSw("AV_COOL_SW", 15);
+DcsBios::Switch2Pos avCoolSw("AV_COOL_SW", 15, true);
 
 DcsBios::Switch2Pos wingFoldPull("WING_FOLD_PULL", 6);
-DcsBios::Switch3Pos wingFoldRotate("WING_FOLD_ROTATE", 14, 7);
+DcsBios::Switch3Pos wingFoldRotate("WING_FOLD_ROTATE", 7, 14);
 
 DcsBios::Switch2Pos hookLever("HOOK_LEVER", 8, true);
 DcsBios::LED arrestingHookLt(0x74a0, 0x0400, 16);
