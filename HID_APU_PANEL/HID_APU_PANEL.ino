@@ -42,100 +42,64 @@
  **************************************************************************************/
 
 
-/*** @file APU_PANEL.ino>
+/*** @file HID_APU_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <APU PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 31-22>
+ * @brief <HID_APU_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
  * <No Mag switch, relay or circuit breakers set up yet.>
- * 
+ * HID Setup for other aircraft.
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
 #include <DcsBios.h>
-//Setup the DDI Buttons - Use library from @Balse on Discord - https://github.com/balzreber/TCA9534
-#include <TCA9534.h>
+#include <Joystick.h>
+//HID Panel for APU PANEL
+//Declare Pins
+#define apuPin1 15
+#define apuPin2 16
+#define crankLeft 14
+#define crankRight 7
+int SwitchOnPin[4] = {apuPin1,crankLeft,crankRight,apuPin2};
+//Store States
+bool lastBtnState[4] = {0,0,0,0};
+bool btnState[4] = {0,0,0,0};
 
-TCA9534 ampcdButtons[4] = {
-  TCA9534(0x23), //Left Row
-  TCA9534(0x20), //Top Row
-  TCA9534(0x22), //Right Row
-  TCA9534(0x21)  //Bottom Row
-};
-bool lastBtnState[28];
-bool buttonState[28];
-uint8_t inputRegister[4];
-unsigned long lastDebounceTime[28];
-unsigned long debounceDelay = 10;    // the debounce time; increase if the output flickers
-int index; 
-char *AMPCD_Btns[] = {"AMPCD_GAIN_SW",
-"AMPCD_NIGHT_DAY",
-"AMPCD_SYM_SW",
-"AMPCD_CONT_SW"};
-char btnName[20];
-
-void onInstPnlDimmerChange(unsigned int newValue) {
-    analogWrite(6,map(newValue,0,65535,0,100));
-}
+#define NUMBUTTONS 4
+Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
+  NUMBUTTONS, 0,                  // Button Count, Hat Switch Count
+  false, false, false,     // X and Y, but no Z Axis
+  false, false, false,   // No Rx, Ry, or Rz
+  false, false,          // No rudder or throttle
+  false, false, false);  // No accelerator, brake, or steering
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch3Pos leftDdiCrsSw("LEFT_DDI_CRS_SW", 4, 7);
-DcsBios::Switch3Pos leftDdiHdgSw("LEFT_DDI_HDG_SW", 8, 10);
+DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", apuPin1);
+DcsBios::LED apuReadyLt(0x74bc, 0x0400, 6);
+DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", crankLeft, crankRight);
 
 void setup() {
   DcsBios::setup();
-  pinMode(6, OUTPUT);
-
-
-  for (int i = 0; i < sizeof(lastBtnState) / sizeof(lastBtnState[0]); i++) {
-    lastBtnState[i] = 0;
-  }
-  for (int i = 0; i < sizeof(ampcdButtons) / sizeof(ampcdButtons[0]); i++) {
-    ampcdButtons[i].Begin();
-    for (int j = 0; j < 7; j++) {
-      ampcdButtons[i].PinMode(j, INPUT);
+  //Set Switch Pins to Inputs and Mag Pins to Outputs
+    for (int i=0;i<NUMBUTTONS;i++){
+      pinMode(SwitchOnPin[i], INPUT_PULLUP);
     }
-  }
-analogWrite(6,75);
+  // Initialize Joystick Library
+  Joystick.begin();
 }
 
 void loop() {
   DcsBios::loop();
-
-  for (int i = 0; i < sizeof(ampcdButtons) / sizeof(ampcdButtons[0]); i++) {
-    inputRegister[i] = ampcdButtons[i].ReadAll();
-    // i == 0; Left
-    // i == 1; Top - Reversed (DDI v2)
-    // i == 2; Right - Reversed (DDI v2)
-    // i == 3; Bottom
-
-    for (int j = 0; j < 5; j++) {
-      int index; 
-      if(i== 1 || i == 2){
-         index = ((4-j) + 5 * i);
-      }else{
-         index = (j + 5 * i);
-      }
-      
-
-      bool btnState = (inputRegister[i] >> (4 - j)) & 1;
-
-      if(btnState != lastBtnState[index]) {
-        lastDebounceTime[index] = millis();
-      }
-
-      if ((millis() - lastDebounceTime[index]) > debounceDelay) {
-        if (btnState != buttonState[index]) {
-            buttonState[index] = btnState;
-                  char btnName[15];
-                  sprintf(btnName, "AMPCD_PB_%02d", index + 1);
-                  DcsBios::tryToSendDcsBiosMessage(btnName, btnState == 1 ? "0" : "1");
-        }
-      }
-      lastBtnState[index] = btnState;
+  for (int i=0;i<NUMBUTTONS;i++)
+  {
+    int btnState = !digitalRead(SwitchOnPin[i]);
+    if (btnState != lastBtnState[i])
+    {
+      Joystick.setButton(i, btnState);
+      lastBtnState[i] = btnState;
     }
-    
-    
   }
+ 
+  delay(50);
 }

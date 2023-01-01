@@ -41,33 +41,53 @@
  *   
  **************************************************************************************/
 
-
-/*** @file OBOGS_PANEL.ino>
+/*** @file HID_ELEC_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 11-22>
- * @brief <OBOGS_PANEL DCS BIOS>
+ * @date <Dec 30-22>
+ * @brief <HID_ELEC PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
+ * <Put a more detailed description of the sketch here>
  * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
-#include "DcsBios.h"
+#include <DcsBios.h>
+//HID Panel for ELEC PANEL
+#include <Joystick.h>
+Joystick_ Joystick;
 
 /* paste code snippets from the reference documentation here */
-//OBOGS Panel
-DcsBios::Switch2Pos obogsSw("OBOGS_SW", A3, true);
-//DcsBios::PotentiometerEWMA<5, 128, 5> oxyFlow("OXY_FLOW", PIN);
-//NUC WPN Panel
-//MC-HYD Panel
-DcsBios::Switch3Pos mcSw("MC_SW", A1, 3);
-DcsBios::Switch2Pos hydIsolateOverrideSw("HYD_ISOLATE_OVERRIDE_SW", 4, true);
-
+DcsBios::Switch2Pos lGenSw("L_GEN_SW", 15, true);
+DcsBios::Switch3Pos batterySw("BATTERY_SW", 3, 14);
+DcsBios::Switch2Pos rGenSw("R_GEN_SW", 4, true);
 
 void setup() {
   DcsBios::setup();
+  // Initialize Button Pins
+  pinMode(15, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
+  pinMode(14, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
+  // Initialize Joystick Library
+  Joystick.begin();
 }
+
+// defining the total [#] of buttons and their pins
+#define NUMBUTTONS 4
+const int ButtonToPinMap[NUMBUTTONS] = {15,3,14,4};
+int lastButtonState[NUMBUTTONS] = {0,0,0,0};
 
 void loop() {
   DcsBios::loop();
+  for (int index = 0; index < NUMBUTTONS; index++)
+  {
+    int currentButtonState = !digitalRead(ButtonToPinMap[index]);
+    if (currentButtonState != lastButtonState[index])
+    {
+      Joystick.setButton(index, currentButtonState);
+      lastButtonState[index] = currentButtonState;
+    }
+  }
+  delay(50);
 }

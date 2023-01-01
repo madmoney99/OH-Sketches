@@ -42,32 +42,56 @@
  **************************************************************************************/
 
 
-/*** @file FCS_PANEL.ino>
+/*** @file HID_RH_AUX_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <FCS PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 30-22>
+ * @brief <HID_APU RH_AUX_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
- *Changes from OH Standard:
-  Gain switch not working in ORIDE pos
-  trim POT was replaced with a rotary encoder with button press on top.
  * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
 #include <DcsBios.h>
+//HID Panel for RHAUX PANEL
+#include <Joystick.h>
+Joystick_ Joystick;
 
 /* paste code snippets from the reference documentation here */
-DcsBios::RotaryEncoder rudTrim("RUD_TRIM", "-400", "+400", A3, 4);
-DcsBios::Switch2Pos toTrimBtn("TO_TRIM_BTN", 2);
-DcsBios::Switch2Pos fcsResetBtn("FCS_RESET_BTN", A2);
-DcsBios::Switch2Pos gainSwitchCover("GAIN_SWITCH_COVER", 15, true);
-DcsBios::Switch2Pos gainSwitch("GAIN_SWITCH", 14);
+DcsBios::Switch2Pos avCoolSw("AV_COOL_SW", 15);
+
+DcsBios::Switch2Pos wingFoldPull("WING_FOLD_PULL", 6);
+DcsBios::Switch3Pos wingFoldRotate("WING_FOLD_ROTATE", 14, 7);
+
+DcsBios::Switch2Pos hookLever("HOOK_LEVER", 8, true);
 
 void setup() {
   DcsBios::setup();
+  // Initialize Button Pins
+  pinMode(15, INPUT_PULLUP);
+  pinMode(6, INPUT_PULLUP);
+  pinMode(14, INPUT_PULLUP);
+  pinMode(7, INPUT_PULLUP);
+  pinMode(8, INPUT_PULLUP);
+  // Initialize Joystick Library
+  Joystick.begin();
 }
+
+// defining the total [#] of buttons and their pins
+#define NUMBUTTONS 5
+const int ButtonToPinMap[NUMBUTTONS] = {15,6,14,7,8};
+int lastButtonState[NUMBUTTONS] = {0,0,0,0,0};
 
 void loop() {
   DcsBios::loop();
+  for (int index = 0; index < NUMBUTTONS; index++)
+  {
+    int currentButtonState = !digitalRead(ButtonToPinMap[index]);
+    if (currentButtonState != lastButtonState[index])
+    {
+      Joystick.setButton(index, currentButtonState);
+      lastButtonState[index] = currentButtonState;
+    }
+  }
+  delay(50);
 }

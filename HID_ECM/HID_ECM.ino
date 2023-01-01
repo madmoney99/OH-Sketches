@@ -42,30 +42,60 @@
  **************************************************************************************/
 
 
-/*** @file FUEL_PANEL.ino>
+/*** @file HID_DISP_ECM_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <SNSR PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 30-22>
+ * @brief <HID_DISP_ECM DCS BIOS>
  *
- * <Put a more detailed description of the sketch here>
+ *
  * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
-#include "DcsBios.h"
+#include <DcsBios.h>
+//HID Panel for ECM PANEL
+#include <Joystick.h>
+Joystick_ Joystick;
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch3Pos probeSw("PROBE_SW", 15, 6);
-DcsBios::Switch3Pos extWngTankSw("EXT_WNG_TANK_SW", 14, 7);
-DcsBios::Switch3Pos extCntTankSw("EXT_CNT_TANK_SW", 16, 8);
-DcsBios::Switch2Pos fuelDumpSw("FUEL_DUMP_SW", 10, true);
-
+DcsBios::Switch2Pos cmsdJetSelBtn("CMSD_JET_SEL_BTN", 15);
+const byte ecmModeSwPins[5] = {4, 6, 14, 7, 16};
+DcsBios::SwitchMultiPos ecmModeSw("ECM_MODE_SW", ecmModeSwPins, 5);
+DcsBios::Switch3Pos cmsdDispenseSw("CMSD_DISPENSE_SW", 8, 10);
+DcsBios::Switch2Pos auxRelSw("AUX_REL_SW", 9);
 
 void setup() {
   DcsBios::setup();
+  // Initialize Button Pins
+  pinMode(15, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
+  pinMode(6, INPUT_PULLUP);
+  pinMode(14, INPUT_PULLUP);
+  pinMode(7, INPUT_PULLUP);
+  pinMode(16, INPUT_PULLUP);
+  pinMode(8, INPUT_PULLUP);
+  pinMode(10, INPUT_PULLUP);
+  pinMode(9, INPUT_PULLUP);
+  // Initialize Joystick Library
+  Joystick.begin();
 }
+
+// defining the total [#] of buttons and their pins
+#define NUMBUTTONS 9
+const int ButtonToPinMap[NUMBUTTONS] = {15,4,6,14,7,16,8,10,9};
+int lastButtonState[NUMBUTTONS] = {0,0,0,0,0,0,0,0,0};
 
 void loop() {
   DcsBios::loop();
+  for (int index = 0; index < NUMBUTTONS; index++)
+  {
+    int currentButtonState = !digitalRead(ButtonToPinMap[index]);
+    if (currentButtonState != lastButtonState[index])
+    {
+      Joystick.setButton(index, currentButtonState);
+      lastButtonState[index] = currentButtonState;
+    }
+  }
+  delay(50);
 }

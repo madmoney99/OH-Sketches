@@ -42,12 +42,12 @@
  **************************************************************************************/
 
 
-/*** @file APU_PANEL.ino>
+/*** @file COMM_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <APU PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 18-22>
+ * @brief <COMM PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
- * <No Mag switch, relay or circuit breakers set up yet.>
+ * <No ILS switch>
  * 
  */
 
@@ -55,42 +55,66 @@
 
 #include <DcsBios.h>
 
-//HID Panel for APU PANEL
-
-#include <Joystick.h>
-
-Joystick_ Joystick;
-
-
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", 15, true);
-DcsBios::LED apuReadyLt(0x74bc, 0x0400, 6);
-DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", 14, 7);
+/*POTS*/
+DcsBios::Potentiometer comVox("COM_VOX", A0);
+DcsBios::Potentiometer comIcs("COM_ICS", A15);
+DcsBios::Potentiometer comRwr("COM_RWR", A1);
+DcsBios::Potentiometer comWpn("COM_WPN", A14);
+DcsBios::Potentiometer comMidsB("COM_MIDS_B", A2);
+DcsBios::Potentiometer comMidsA("COM_MIDS_A", A13);
+DcsBios::Potentiometer comTacan("COM_TACAN", A3);
+DcsBios::Potentiometer comAux("COM_AUX", A12);
+
+
+/*SWITCHES*/
+DcsBios::Switch3Pos comCommRelaySw("COM_COMM_RELAY_SW", 52, 53);
+DcsBios::Switch3Pos comCommGXmtSw("COM_COMM_G_XMT_SW", 50, 51);
+DcsBios::Switch2Pos comIlsUfcManSw("COM_ILS_UFC_MAN_SW", 48, true);
+DcsBios::Switch3Pos comCryptoSw("COM_CRYPTO_SW", 49, 46);
+DcsBios::Switch3Pos comIffMode4Sw("COM_IFF_MODE4_SW", 44, 45);
+DcsBios::Switch2Pos comIffMasterSw("COM_IFF_MASTER_SW", 47);
+
+DcsBios::Switch3Pos comm1AntSelectSw("COMM1_ANT_SELECT_SW", PIN0, 41);
+DcsBios::Switch3Pos iffAntSelectSw("IFF_ANT_SELECT_SW", PIN1, 38);
+
+/*NOT IN SERVICE YET
+const byte comIlsChannelSwPins[20] = {PIN_0, PIN_1, PIN_2, PIN_3, PIN_4, PIN_5, PIN_6, PIN_7, PIN_8, PIN_9, PIN_10, PIN_11, PIN_12, PIN_13, PIN_14, PIN_15, PIN_16, PIN_17, PIN_18, PIN_19};
+DcsBios::SwitchMultiPos comIlsChannelSw("COM_ILS_CHANNEL_SW", comIlsChannelSwPins, 20);*/
 
 void setup() {
   DcsBios::setup();
-  // Initialize Button Pins
-  pinMode(14, INPUT_PULLUP);
-  pinMode(7, INPUT_PULLUP);
-  // Initialize Joystick Library
-  Joystick.begin();
 }
-// defining the total [#] of buttons and their pins
-const int ButtonToPinMap[2] = {4,7};
 
-int lastButtonState[2] = {0,0};
 void loop() {
   DcsBios::loop();
-
-  for (int index = 0; index < 15; index++)
-  {
-    int currentButtonState = !digitalRead(ButtonToPinMap[index]);
-    if (currentButtonState != lastButtonState[index])
-    {
-      Joystick.setButton(index, currentButtonState);
-      lastButtonState[index] = currentButtonState;
-    }
-  }
-
-  delay(50);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

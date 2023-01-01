@@ -42,40 +42,88 @@
  **************************************************************************************/
 
 
-/*** @file INTR_LIGHTS.ino>
+/*** @file HID_ECS_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 8-22>
- * @brief <INTR LIGHT DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 30-22>
+ * @brief <HID_ECS_PANEL PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
  * <Put a more detailed description of the sketch here>
+ * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
+#include <DcsBios.h>
 
-#include "DcsBios.h"
-#define chartDimmerPin A1
-#define warnCautionDimmerPin A2
-#define lightsTestSwPin A3
-#define cockkpitLightModeSwPinA 2
-#define cockkpitLightModeSwPinB 3
-#define consolesDimmerPin A7
-#define instPnlDimmerPin A8
-#define floodDimmerPin A10
+//HID Panel for ECS PANEL
+#include <Joystick.h>
+#define NUMBUTTONS 7
+Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
+  NUMBUTTONS, 0,                  // Button Count, Hat Switch Count
+  true, true, false,     // X and Y, but no Z Axis
+  false, false, false,   // No Rx, Ry, or Rz
+  false, false,          // No rudder or throttle
+  false, false, false);  // No accelerator, brake, or steering
+
+int xAxis = A9;
+int yAxis = A10;
+int xAxisValue = 0;
+int yAxisValue = 0;
 
 /* paste code snippets from the reference documentation here */
-DcsBios::PotentiometerEWMA<5, 128, 50> chartDimmer("CHART_DIMMER", chartDimmerPin);
-DcsBios::PotentiometerEWMA<5, 128, 50> warnCautionDimmer("WARN_CAUTION_DIMMER", warnCautionDimmerPin);
-DcsBios::Switch2Pos lightsTestSw("LIGHTS_TEST_SW", lightsTestSwPin, true);
-DcsBios::Switch3Pos cockkpitLightModeSw("COCKKPIT_LIGHT_MODE_SW", cockkpitLightModeSwPinA, cockkpitLightModeSwPinB);
-DcsBios::PotentiometerEWMA<5, 128, 50> consolesDimmer("CONSOLES_DIMMER", consolesDimmerPin);
-DcsBios::PotentiometerEWMA<5, 128, 50> instPnlDimmer("INST_PNL_DIMMER", instPnlDimmerPin);
-DcsBios::PotentiometerEWMA<5, 128, 50> floodDimmer("FLOOD_DIMMER", floodDimmerPin);
+/* BLEED AIR SWITCH NOT DONE YET
+DcsBios::Switch2Pos bleedAirPull("BLEED_AIR_PULL", PIN);
+const byte bleedAirKnobPins[7] = {PIN_0, PIN_1, PIN_2, PIN_3}
+;DcsBios::SwitchMultiPos bleedAirKnob("BLEED_AIR_KNOB", bleedAirKnobPins, 7);
+*/
+DcsBios::Switch3Pos ecsModeSw("ECS_MODE_SW", A3, A2);
+DcsBios::Switch3Pos cabinPressSw("CABIN_PRESS_SW", A1, 4);
+
+DcsBios::Switch2Pos pitotHeatSw("PITOT_HEAT_SW", A0, true);
+DcsBios::Switch3Pos engAntiiceSw("ENG_ANTIICE_SW", 15, 6);
+
+DcsBios::Potentiometer cabinTemp("CABIN_TEMP", A9);
+DcsBios::Potentiometer suitTemp("SUIT_TEMP", A10);
 
 void setup() {
   DcsBios::setup();
+  // Set Range Values
+  Joystick.setXAxisRange(0,1024);
+  Joystick.setYAxisRange(0,1024);
+  // Initialize Button Pins
+  pinMode(A3, INPUT_PULLUP);
+  pinMode(A2, INPUT_PULLUP);
+  pinMode(A1, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
+  pinMode(A0, INPUT_PULLUP);
+  pinMode(15, INPUT_PULLUP);
+  pinMode(6, INPUT_PULLUP);
+  // Initialize Joystick Library
+  Joystick.begin();
 }
+
+// defining the total [#] of buttons and their pins
+const int ButtonToPinMap[NUMBUTTONS] = {A3,A2,A1,4,A0,15,6};
+int lastButtonState[NUMBUTTONS] = {0,0,0,0,0,0,0};
 
 void loop() {
   DcsBios::loop();
-}
+  for (int index = 0; index < NUMBUTTONS; index++)
+  {
+    int currentButtonState = !digitalRead(ButtonToPinMap[index]);
+    if (currentButtonState != lastButtonState[index])
+    {
+      Joystick.setButton(index, currentButtonState);
+      lastButtonState[index] = currentButtonState;
+    }
+  }
+  delay(50);
 
+  xAxisValue = analogRead(xAxis);
+  Joystick.setXAxis(xAxisValue);
+  delay(1);
+
+  yAxisValue = analogRead(yAxis);
+  Joystick.setYAxis(yAxisValue);
+  delay(1); 
+
+}

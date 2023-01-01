@@ -42,32 +42,59 @@
  **************************************************************************************/
 
 
-/*** @file SNSR_PANEL.ino>
+/*** @file HID_OBOGS_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <SNSR PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 30-22>
+ * @brief <HID_OBOGS_PANEL DCS BIOS>
  *
- * <Put a more detailed description of the sketch here>
- * Both rotary switches call for all positions (8 and 4 respectively) to be used.  Pro Micro doesn't have enough spots so I've declared both off positions to pin 2, the only remaining pin on the board.
+ * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
-#include "DcsBios.h"
+#include <DcsBios.h>
+//HID Panel for OBOGS PANEL
+#include <Joystick.h>
+Joystick_ Joystick;
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch3Pos flirSw("FLIR_SW", A3, A2);
-DcsBios::Switch2Pos ltdRSw("LTD_R_SW", 3);
-DcsBios::Switch2Pos lstNflrSw("LST_NFLR_SW", 15);
-const byte radarSwPins[7] = { 2, A1, 4, A0 } 
-;DcsBios::SwitchMultiPos radarSw("RADAR_SW", radarSwPins, 7);
-const byte insSwPins[15] = { 2, 6, 14, 7, 16, 8, 10, 9 } 
-;DcsBios::SwitchMultiPos insSw("INS_SW", insSwPins, 15);
+//OBOGS Panel
+DcsBios::Switch2Pos obogsSw("OBOGS_SW", A3, true);
+//DcsBios::PotentiometerEWMA<5, 128, 5> oxyFlow("OXY_FLOW", PIN);
+//NUC WPN Panel
+//MC-HYD Panel
+DcsBios::Switch3Pos mcSw("MC_SW", A1, 3);
+DcsBios::Switch2Pos hydIsolateOverrideSw("HYD_ISOLATE_OVERRIDE_SW", 4, true);
+
 
 void setup() {
   DcsBios::setup();
+  // Initialize Button Pins
+  pinMode(A3, INPUT_PULLUP);
+  pinMode(15, INPUT_PULLUP);
+  pinMode(A1, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
+  // Initialize Joystick Library
+  Joystick.begin();
 }
+
+// defining the total [#] of buttons and their pins
+#define NUMBUTTONS 5
+const int ButtonToPinMap[NUMBUTTONS] = {A3,15,A1,3,4};
+int lastButtonState[NUMBUTTONS] = {0,0,0,0,0};
 
 void loop() {
   DcsBios::loop();
+  for (int index = 0; index < NUMBUTTONS; index++)
+  {
+    int currentButtonState = !digitalRead(ButtonToPinMap[index]);
+    if (currentButtonState != lastButtonState[index])
+    {
+      Joystick.setButton(index, currentButtonState);
+      lastButtonState[index] = currentButtonState;
+    }
+  }
+
+  delay(50);
 }

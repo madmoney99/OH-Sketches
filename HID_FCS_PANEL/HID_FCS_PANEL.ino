@@ -42,10 +42,10 @@
  **************************************************************************************/
 
 
-/*** @file KY58_PANEL.ino>
+/*** @file HID_FCS_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 9-22>
- * @brief <KY58 PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 26-22>
+ * @brief <HID_FCS_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
  * <Put a more detailed description of the sketch here>
  * 
@@ -53,20 +53,46 @@
 
 #define DCSBIOS_DEFAULT_SERIAL
 
-#include "DcsBios.h"
+#include <DcsBios.h>
+//HID Panel for FUEL PANEL
+#include <Joystick.h>
+Joystick_ Joystick;
 
 /* paste code snippets from the reference documentation here */
-const byte ky58ModeSelectPins[7] = {A3, 2, A2, 3}
-;DcsBios::SwitchMultiPos ky58ModeSelect("KY58_MODE_SELECT", ky58ModeSelectPins, 7);
-DcsBios::Switch3Pos ky58PowerSelect("KY58_POWER_SELECT", A1, 4);
-DcsBios::PotentiometerEWMA<5, 128, 50> ky58Volume("KY58_VOLUME", A0);
-const byte ky58FillSelectPins[15] = {15, 6, 14, 7, 16, 8, 10, 9}
-;DcsBios::SwitchMultiPos ky58FillSelect("KY58_FILL_SELECT", ky58FillSelectPins, 15);
+DcsBios::RotaryEncoder rudTrim("RUD_TRIM", "-400", "+400", A3, 4);
+DcsBios::Switch2Pos toTrimBtn("TO_TRIM_BTN", 2);
+DcsBios::Switch2Pos fcsResetBtn("FCS_RESET_BTN", A2);
+DcsBios::Switch2Pos gainSwitchCover("GAIN_SWITCH_COVER", 15, true);
+DcsBios::Switch2Pos gainSwitch("GAIN_SWITCH", 14, true);
+
 
 void setup() {
   DcsBios::setup();
+  // Initialize Button Pins
+  pinMode(2, INPUT_PULLUP);
+  pinMode(A2, INPUT_PULLUP);
+  pinMode(15, INPUT_PULLUP);
+  pinMode(14, INPUT_PULLUP);
+  // Initialize Joystick Library
+  Joystick.begin();
 }
+
+// defining the total [#] of buttons and their pins
+#define numberOfButtons 4
+const int ButtonToPinMap[numberOfButtons] = {2,A2,15,14};
+int lastButtonState[numberOfButtons] = {0,0,0,0};
 
 void loop() {
   DcsBios::loop();
+  for (int index = 0; index < numberOfButtons; index++)
+  {
+    int currentButtonState = !digitalRead(ButtonToPinMap[index]);
+    if (currentButtonState != lastButtonState[index])
+    {
+      Joystick.setButton(index, currentButtonState);
+      lastButtonState[index] = currentButtonState;
+    }
+  }
+
+  delay(50);
 }
