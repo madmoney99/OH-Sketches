@@ -42,43 +42,66 @@
  **************************************************************************************/
 
 
-/*** @file HID_RH_AUX_PANEL.ino>
+/*** @file IFEI_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 30-22>
- * @brief <HID_APU RH_AUX_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
- *
+ * @date <Dec 11-22>
+ * @brief <IFEI_PANEL DCS BIOS>
+ * NON STANDARD
+ * Missing JETT SELECT RI, RO, LI, LO, CTR as there is a Tekcreationz panel there.
  * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
 #include <DcsBios.h>
-//HID Panel for RHAUX PANEL
 #include <Joystick.h>
-#define NUMBUTTONS 5
-
-// defining the total [#] of buttons and their pins
-int SwitchOnPin[NUMBUTTONS] = {15,6,14,7,8};
+//HID Panel for APU PANEL
+#define NUMBUTTONS 10
+//Declare Pins
+#define upPin 2
+#define qtyPin 3
+#define modePin 4
+#define downPin 7
+#define zonePin 8
+#define etPin 9
+#define selectPin1 15
+#define selectPin2 14
+#define dddiPin1 A10
+#define dddiPin2 16
+int SwitchOnPin[NUMBUTTONS] = {modePin,qtyPin,upPin,downPin,zonePin,etPin,dddiPin1,dddiPin2,selectPin2,selectPin1};
 //Store States
-bool lastBtnState[NUMBUTTONS] = {0,0,0,0};
-bool btnState[NUMBUTTONS] = {0,0,0,0};
+bool lastBtnState[NUMBUTTONS] = {0,0,0,0,0,0,0,0,0,0};
+bool btnState[NUMBUTTONS] = {0,0,0,0,0,0,0,0,0,0};
+
+int xAxis = A3;
+int xAxisValue = 0;
 
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
   NUMBUTTONS, 0,                  // Button Count, Hat Switch Count
-  false, false, false,     // X and Y, but no Z Axis
+  true, false, false,     // X and Y, but no Z Axis
   false, false, false,   // No Rx, Ry, or Rz
   false, false,          // No rudder or throttle
   false, false, false);  // No accelerator, brake, or steering
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos avCoolSw("AV_COOL_SW", 15);
-DcsBios::Switch2Pos wingFoldPull("WING_FOLD_PULL", 6);
-DcsBios::Switch3Pos wingFoldRotate("WING_FOLD_ROTATE", 7, 14);
-DcsBios::Switch2Pos hookLever("HOOK_LEVER", 8, true);
+DcsBios::Switch2Pos ifeiUpBtn("IFEI_UP_BTN", upPin);
+DcsBios::Switch2Pos ifeiQtyBtn("IFEI_QTY_BTN", qtyPin);
+DcsBios::Switch2Pos ifeiModeBtn("IFEI_MODE_BTN", modePin);
+
+DcsBios::Switch2Pos ifeiDwnBtn("IFEI_DWN_BTN", downPin);
+DcsBios::Switch2Pos ifeiZoneBtn("IFEI_ZONE_BTN", zonePin);
+DcsBios::Switch2Pos ifeiEtBtn("IFEI_ET_BTN", etPin);
+
+DcsBios::PotentiometerEWMA<5, 128, 50> ifei("IFEI", A3);
+DcsBios::Switch3Pos modeSelectorSw("MODE_SELECTOR_SW", selectPin1, selectPin2);
+DcsBios::Switch3Pos selectHudLddiRddi("SELECT_HUD_LDDI_RDDI", dddiPin1, dddiPin2);
+
 
 void setup() {
   DcsBios::setup();
-  //Set Switch Pins to Inputs and Mag Pins to Outputs
+  // Set Range Values
+  Joystick.setXAxisRange(0,1024);
+  //Set Switch Pins to Inputs
     for (int i=0;i<NUMBUTTONS;i++){
       pinMode(SwitchOnPin[i], INPUT_PULLUP);
     }
@@ -97,6 +120,9 @@ void loop() {
       lastBtnState[i] = btnState;
     }
   }
- 
-  delay(50);
+    delay(50);
+  xAxisValue = analogRead(xAxis);
+  Joystick.setXAxis(xAxisValue);
+  delay(1); 
+
 }

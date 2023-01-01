@@ -42,10 +42,11 @@
  **************************************************************************************/
 
 
-/*** @file HID_RH_AUX_PANEL.ino>
+/*** @file HID_MASTER_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 30-22>
- * @brief <HID_APU RH_AUX_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 11-22>
+ * @brief <MASTER_PANEL DCS BIOS>
+ *
  *
  * 
  */
@@ -53,15 +54,21 @@
 #define DCSBIOS_DEFAULT_SERIAL
 
 #include <DcsBios.h>
-//HID Panel for RHAUX PANEL
 #include <Joystick.h>
-#define NUMBUTTONS 5
+//HID Panel for MASTER ARM PANEL
+#define NUMBUTTONS 6
+//Declare Pins
+#define firepin A3
+#define aaPin 2
+#define agPin A2
+#define arm1Pin A0
+#define arm2Pin 3
+#define jettPin A1
 
-// defining the total [#] of buttons and their pins
-int SwitchOnPin[NUMBUTTONS] = {15,6,14,7,8};
+int SwitchOnPin[NUMBUTTONS] = {firepin,aaPin,agPin,arm1Pin,arm2Pin,jettPin};
 //Store States
-bool lastBtnState[NUMBUTTONS] = {0,0,0,0};
-bool btnState[NUMBUTTONS] = {0,0,0,0};
+bool lastBtnState[NUMBUTTONS] = {0,0,0,0,0,0};
+bool btnState[NUMBUTTONS] = {0,0,0,0,0,0};
 
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
   NUMBUTTONS, 0,                  // Button Count, Hat Switch Count
@@ -69,16 +76,23 @@ Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
   false, false, false,   // No Rx, Ry, or Rz
   false, false,          // No rudder or throttle
   false, false, false);  // No accelerator, brake, or steering
-
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos avCoolSw("AV_COOL_SW", 15);
-DcsBios::Switch2Pos wingFoldPull("WING_FOLD_PULL", 6);
-DcsBios::Switch3Pos wingFoldRotate("WING_FOLD_ROTATE", 7, 14);
-DcsBios::Switch2Pos hookLever("HOOK_LEVER", 8, true);
+DcsBios::Switch2Pos fireExtBtn("FIRE_EXT_BTN", A3);
+DcsBios::Switch2Pos masterModeAg("MASTER_MODE_AG", A2);
+DcsBios::Switch2Pos emerJettBtn("EMER_JETT_BTN", A1);
+DcsBios::Switch2Pos masterModeAa("MASTER_MODE_AA", 2);
+DcsBios::Switch2Pos masterArmSw("MASTER_ARM_SW", 3);
+
+/*To be sorted out, backlighting?
+DcsBios::LED mcReady(0x740c, 0x8000, A3);
+DcsBios::LED masterModeAaLt(0x740c, 0x0200, PIN);
+DcsBios::LED masterModeAgLt(0x740c, 0x0400, PIN);
+DcsBios::LED mcDisch(0x740c, 0x4000, PIN);
+*/
 
 void setup() {
   DcsBios::setup();
-  //Set Switch Pins to Inputs and Mag Pins to Outputs
+  //Set Switch Pins to Inputs
     for (int i=0;i<NUMBUTTONS;i++){
       pinMode(SwitchOnPin[i], INPUT_PULLUP);
     }
@@ -97,6 +111,6 @@ void loop() {
       lastBtnState[i] = btnState;
     }
   }
- 
-  delay(50);
+    delay(50);
+
 }
