@@ -42,32 +42,50 @@
  **************************************************************************************/
 
 
-/*** @file HID_APU_PANEL.ino>
+/*** @file HID_LH_AUX_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 31-22>
- * @brief <HID_APU_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <Dec 30-22>
+ * @brief <HID_APU LH_AUX_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
  *
- * <No Mag switch, relay or circuit breakers set up yet.>
- * HID Setup for other aircraft.
+ * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
 #include <DcsBios.h>
+//HID Panel for RHAUX PANEL
 #include <Joystick.h>
-//HID Panel for APU PANEL
-//Declare Pins
-#define apuPin1 15
-#define apuPin2 16
-#define apuLight 6
-#define crankLeft 14
-#define crankRight 7
-int SwitchOnPin[4] = {apuPin1,crankLeft,crankRight,apuPin2};
-//Store States
-bool lastBtnState[4] = {0,0,0,0};
-bool btnState[4] = {0,0,0,0};
+#define NUMBUTTONS 15
 
-#define NUMBUTTONS 4
+/*#define lgUpDownPIn 3
+#define downlockPIn A2
+#define silencePin A3 */
+
+#define flapUpPin A3
+#define flapDownPin A2
+#define launchBarPin A1
+#define hookBypassPin A0
+
+#define jettPin 15
+#define jettSafePin 14
+#define jettRackPin 16
+#define antiskidPin 10
+
+#define jettLPin 6
+#define jettRPin 7
+#define jettStoresPin 8
+#define taxiLightPin 9
+
+#define parkingBPullPin 2
+#define parkingRot1Pin 3
+#define parkingRot2Pin 4
+
+// defining the total [#] of buttons and their pins
+int SwitchOnPin[NUMBUTTONS] = {launchBarPin,flapUpPin,flapDownPin,taxiLightPin,antiskidPin,hookBypassPin,jettPin,jettLPin,jettSafePin,jettRPin,jettRackPin,jettStoresPin,parkingBPullPin,parkingRot1Pin,parkingRot2Pin};
+//Store States
+bool lastBtnState[NUMBUTTONS] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+bool btnState[NUMBUTTONS] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
   NUMBUTTONS, 0,                  // Button Count, Hat Switch Count
   false, false, false,     // X and Y, but no Z Axis
@@ -76,9 +94,21 @@ Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
   false, false, false);  // No accelerator, brake, or steering
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", apuPin1);
+/*DcsBios::Switch2Pos gearLever("GEAR_LEVER", lgUpDownPIn);
+DcsBios::Switch2Pos gearDownlockOverrideBtn("GEAR_DOWNLOCK_OVERRIDE_BTN", downlockPIn);
+ */
 
-DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", crankLeft, crankRight);
+DcsBios::Switch2Pos launchBarSw("LAUNCH_BAR_SW", launchBarPin);
+DcsBios::Switch3Pos flapSw("FLAP_SW", flapUpPin, flapDownPin);
+DcsBios::Switch2Pos selJettBtn("SEL_JETT_BTN", jettPin);
+const byte selJettKnobPins[5] = {jettLPin, jettSafePin, jettRPin, jettRackPin, jettStoresPin};
+DcsBios::SwitchMultiPos selJettKnob("SEL_JETT_KNOB", selJettKnobPins, 5);
+DcsBios::Switch2Pos ldgTaxiSw("LDG_TAXI_SW", taxiLightPin);
+DcsBios::Switch2Pos antiSkidSw("ANTI_SKID_SW", antiskidPin);
+DcsBios::Switch2Pos hookBypassSw("HOOK_BYPASS_SW", hookBypassPin);
+
+DcsBios::Switch2Pos emergencyParkingBrakePull("EMERGENCY_PARKING_BRAKE_PULL", parkingBPullPin);
+DcsBios::Switch3Pos emergencyParkingBrakeRotate("EMERGENCY_PARKING_BRAKE_ROTATE", parkingRot1Pin, parkingRot2Pin);
 
 void setup() {
   DcsBios::setup();
@@ -86,11 +116,10 @@ void setup() {
     for (int i=0;i<NUMBUTTONS;i++){
       pinMode(SwitchOnPin[i], INPUT_PULLUP);
     }
-  pinMode(apuLight, OUTPUT); // the LED pin
   // Initialize Joystick Library
   Joystick.begin();
 }
-DcsBios::LED apuReadyLt(0x74c2, 0x0800, apuLight);
+
 void loop() {
   DcsBios::loop();
   for (int i=0;i<NUMBUTTONS;i++)
@@ -102,11 +131,6 @@ void loop() {
       lastBtnState[i] = btnState;
     }
   }
-  if (digitalRead(apuPin1) == HIGH) {
-    digitalWrite(apuLight, HIGH);
-  }
-  else {
-    digitalWrite(apuLight, LOW);
-  }
+ 
   delay(50);
 }

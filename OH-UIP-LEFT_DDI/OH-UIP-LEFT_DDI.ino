@@ -79,11 +79,11 @@ void onInstPnlDimmerChange(unsigned int newValue) {
 }
 DcsBios::IntegerBuffer instPnlDimmerBuffer(0x7546, 0xffff, 0, onInstPnlDimmerChange);
 
-DcsBios::RotaryEncoder leftDdiBrtCtl("RIGHT_DDI_BRT_CTL", "-500", "+500", A0, A1);
-DcsBios::RotaryEncoder leftDdiContCtl("RIGHT_DDI_CONT_CTL", "-500", "+500", A2, A3);
+DcsBios::RotaryEncoder leftDdiBrtCtl("LEFT_DDI_BRT_CTL", "-500", "+500", A6, 7);
+DcsBios::RotaryEncoder leftDdiContCtl("LEFT_DDI_CONT_CTL", "-500", "+500", A8, A10);
 
-const byte leftDdiBrtSelectPins[3] = {10, 11, 12};
-DcsBios::SwitchMultiPos leftDdiBrtSelect("RIGHT_DDI_BRT_SELECT", leftDdiBrtSelectPins, 3);
+const byte leftDdiBrtSelectPins[3] = {A2, A1, A0};
+DcsBios::SwitchMultiPos leftDdiBrtSelect("LEFT_DDI_BRT_SELECT", leftDdiBrtSelectPins, 3);
 
 /**
 * Arduino Setup Function
@@ -146,7 +146,7 @@ void loop() {
         if (btnState != buttonState[index]) {
             buttonState[index] = btnState;
                   char btnName[14];
-                  sprintf(btnName, "RIGHT_DDI_PB_%02d", index + 1);
+                  sprintf(btnName, "LEFT_DDI_PB_%02d", index + 1);
                   DcsBios::tryToSendDcsBiosMessage(btnName, btnState == 1 ? "0" : "1");
         }
       }

@@ -42,55 +42,60 @@
  **************************************************************************************/
 
 
-/*** @file HID_APU_PANEL.ino>
+/*** @file HID_SPIN_PANEL.ino>
 /** @author <Tony Goodale>
- * @date <Dec 31-22>
- * @brief <HID_APU_PANEL DCS BIOS sketch in line with the OpenHornet Interconnect dated 2022-08-05>
+ * @date <JAN 3-23>
+ * @brief <HID_SPIN_PANEL DCS BIOS>
  *
- * <No Mag switch, relay or circuit breakers set up yet.>
- * HID Setup for other aircraft.
+ *
+ * 
  */
 
 #define DCSBIOS_DEFAULT_SERIAL
 
 #include <DcsBios.h>
 #include <Joystick.h>
-//HID Panel for APU PANEL
+//HID Panel for Spin Recovery PANEL
+#define NUMBUTTONS 3
 //Declare Pins
-#define apuPin1 15
-#define apuPin2 16
-#define apuLight 6
-#define crankLeft 14
-#define crankRight 7
-int SwitchOnPin[4] = {apuPin1,crankLeft,crankRight,apuPin2};
-//Store States
-bool lastBtnState[4] = {0,0,0,0};
-bool btnState[4] = {0,0,0,0};
+#define hmdPot A3
+#define irCoolPin1 2
+#define irCoolPin2 A2
+#define spinPin 3
 
-#define NUMBUTTONS 4
+int xAxis = hmdPot;
+int xAxisValue = 0;
+
+int SwitchOnPin[NUMBUTTONS] = {irCoolPin1,irCoolPin2,spinPin};
+//Store States
+bool lastBtnState[NUMBUTTONS] = {0,0,0};
+bool btnState[NUMBUTTONS] = {0,0,0};
+
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
   NUMBUTTONS, 0,                  // Button Count, Hat Switch Count
-  false, false, false,     // X and Y, but no Z Axis
+  true, false, false,     // X and Y, but no Z Axis
   false, false, false,   // No Rx, Ry, or Rz
   false, false,          // No rudder or throttle
   false, false, false);  // No accelerator, brake, or steering
 
 /* paste code snippets from the reference documentation here */
-DcsBios::Switch2Pos apuControlSw("APU_CONTROL_SW", apuPin1);
 
-DcsBios::Switch3Pos engineCrankSw("ENGINE_CRANK_SW", crankLeft, crankRight);
+DcsBios::PotentiometerEWMA<5, 128, 5> hmdOffBrt("HMD_OFF_BRT", hmdPot);
+DcsBios::Switch3Pos irCoolSw("IR_COOL_SW", irCoolPin1, irCoolPin2);
+DcsBios::Switch2Pos spinRecoverySw("SPIN_RECOVERY_SW", spinPin);
 
 void setup() {
   DcsBios::setup();
-  //Set Switch Pins to Inputs and Mag Pins to Outputs
+  // Set Range Values
+  Joystick.setXAxisRange(0,1024);
+  //Set Switch Pins to Inputs
     for (int i=0;i<NUMBUTTONS;i++){
       pinMode(SwitchOnPin[i], INPUT_PULLUP);
     }
-  pinMode(apuLight, OUTPUT); // the LED pin
   // Initialize Joystick Library
   Joystick.begin();
 }
-DcsBios::LED apuReadyLt(0x74c2, 0x0800, apuLight);
+
 void loop() {
   DcsBios::loop();
   for (int i=0;i<NUMBUTTONS;i++)
@@ -102,11 +107,8 @@ void loop() {
       lastBtnState[i] = btnState;
     }
   }
-  if (digitalRead(apuPin1) == HIGH) {
-    digitalWrite(apuLight, HIGH);
-  }
-  else {
-    digitalWrite(apuLight, LOW);
-  }
-  delay(50);
+    delay(50);
+  xAxisValue = analogRead(xAxis);
+  Joystick.setXAxis(xAxisValue);
+  delay(1); 
 }
