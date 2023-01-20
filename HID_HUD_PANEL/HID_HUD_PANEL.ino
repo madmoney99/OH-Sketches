@@ -100,7 +100,7 @@ DcsBios::Switch2Pos hudAltSw("HUD_ALT_SW", altBAROPin);
 DcsBios::Switch3Pos hudAttSw("HUD_ATT_SW", attINSPin, attSTBYPin);
 
 DcsBios::Potentiometer hudSymBrt("HUD_SYM_BRT", brtPot);
-DcsBios::Potentiometer hudBlackLvl("HUD_BLACK_LVL", brtPot);
+DcsBios::Potentiometer hudBlackLvl("HUD_BLACK_LVL", blkPot);
 DcsBios::Potentiometer hudBalance("HUD_BALANCE", balPot);
 DcsBios::Potentiometer hudAoaIndexer("HUD_AOA_INDEXER", aoaPot);
 

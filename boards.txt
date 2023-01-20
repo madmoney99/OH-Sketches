@@ -1092,6 +1092,57 @@ marmleonardo.build.extra_flags={build.usb_flags}
 
 ##############################################################
 
+hudleonardo.name=HUD
+hudleonardo.vid.0=0x2341
+hudleonardo.pid.0=0x0036
+hudleonardo.vid.1=0x2341
+hudleonardo.pid.1=0x8036
+hudleonardo.vid.2=0x2A03
+hudleonardo.pid.2=0x0036
+hudleonardo.vid.3=0x2A03
+hudleonardo.pid.3=0x8036
+hudleonardo.upload_port.0.vid=0x2341
+hudleonardo.upload_port.0.pid=0x0036
+hudleonardo.upload_port.1.vid=0x2341
+hudleonardo.upload_port.1.pid=0x8036
+hudleonardo.upload_port.2.vid=0x2A03
+hudleonardo.upload_port.2.pid=0x0036
+hudleonardo.upload_port.3.vid=0x2A03
+hudleonardo.upload_port.3.pid=0x8036
+hudleonardo.upload_port.4.board=leonardo
+
+hudleonardo.upload.tool=avrdude
+hudleonardo.upload.tool.default=avrdude
+hudleonardo.upload.tool.network=arduino_ota
+hudleonardo.upload.protocol=avr109
+hudleonardo.upload.maximum_size=28672
+hudleonardo.upload.maximum_data_size=2560
+hudleonardo.upload.speed=57600
+hudleonardo.upload.disable_flushing=true
+hudleonardo.upload.use_1200bps_touch=true
+hudleonardo.upload.wait_for_upload_port=true
+
+hudleonardo.bootloader.tool=avrdude
+hudleonardo.bootloader.tool.default=avrdude
+hudleonardo.bootloader.low_fuses=0xff
+hudleonardo.bootloader.high_fuses=0xd8
+hudleonardo.bootloader.extended_fuses=0xcb
+hudleonardo.bootloader.file=caterina/Caterina-Leonardo.hex
+hudleonardo.bootloader.unlock_bits=0x3F
+hudleonardo.bootloader.lock_bits=0x2F
+
+hudleonardo.build.mcu=atmega32u4
+hudleonardo.build.f_cpu=16000000L
+hudleonardo.build.vid=0x2341
+hudleonardo.build.pid=0x8063
+hudleonardo.build.usb_product="HUD Controls"
+hudleonardo.build.board=AVR_LEONARDO
+hudleonardo.build.core=arduino
+hudleonardo.build.variant=leonardo
+hudleonardo.build.extra_flags={build.usb_flags}
+
+##############################################################
+
 ifeileonardo.name=IFEI
 ifeileonardo.vid.0=0x2341
 ifeileonardo.pid.0=0x0036
@@ -1142,7 +1193,6 @@ ifeileonardo.build.variant=leonardo
 ifeileonardo.build.extra_flags={build.usb_flags}
 
 ##############################################################
-
 leonardoeth.name=Arduino Leonardo ETH
 leonardoeth.vid.0=0x2a03
 leonardoeth.pid.0=0x0040
