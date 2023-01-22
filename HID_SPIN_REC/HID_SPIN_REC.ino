@@ -56,20 +56,21 @@
 #include <DcsBios.h>
 #include <Joystick.h>
 //HID Panel for Spin Recovery PANEL
-#define NUMBUTTONS 3
+#define NUMBUTTONS 4
 //Declare Pins
 #define hmdPot A3
-#define irCoolPin1 2
-#define irCoolPin2 A2
-#define spinPin 3
+#define irCoolPin1 9
+#define irCoolPin2 8
+#define spinPin1 3
+#define spinPin2 4
 
 int xAxis = hmdPot;
 int xAxisValue = 0;
 
-int SwitchOnPin[NUMBUTTONS] = {irCoolPin1,irCoolPin2,spinPin};
+int SwitchOnPin[NUMBUTTONS] = {irCoolPin1,irCoolPin2,spinPin1,spinPin2};
 //Store States
-bool lastBtnState[NUMBUTTONS] = {0,0,0};
-bool btnState[NUMBUTTONS] = {0,0,0};
+bool lastBtnState[NUMBUTTONS] = {0,0,0,0};
+bool btnState[NUMBUTTONS] = {0,0,0,0};
 
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
   NUMBUTTONS, 0,                  // Button Count, Hat Switch Count
@@ -82,7 +83,7 @@ Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
 
 DcsBios::PotentiometerEWMA<5, 128, 5> hmdOffBrt("HMD_OFF_BRT", hmdPot);
 DcsBios::Switch3Pos irCoolSw("IR_COOL_SW", irCoolPin1, irCoolPin2);
-DcsBios::Switch2Pos spinRecoverySw("SPIN_RECOVERY_SW", spinPin);
+DcsBios::Switch2Pos spinRecoverySw("SPIN_RECOVERY_SW", spinPin1);
 
 void setup() {
   DcsBios::setup();
