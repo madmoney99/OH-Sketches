@@ -79,10 +79,10 @@ void onInstPnlDimmerChange(unsigned int newValue) {
 }
 DcsBios::IntegerBuffer instPnlDimmerBuffer(0x7546, 0xffff, 0, onInstPnlDimmerChange);
 
-DcsBios::RotaryEncoder rightDdiBrtCtl("RIGHT_DDI_BRT_CTL", "-3200", "+3200", A0, A1);
-DcsBios::RotaryEncoder rightDdiContCtl("RIGHT_DDI_CONT_CTL", "-3200", "+3200", A2, A3);
+DcsBios::RotaryEncoder rightDdiBrtCtl("RIGHT_DDI_BRT_CTL", "-3200", "+3200", A6, 7);
+DcsBios::RotaryEncoder rightDdiContCtl("RIGHT_DDI_CONT_CTL", "-3200", "+3200", A8, A10);
 
-const byte rightDdiBrtSelectPins[3] = {10, 11, 12};
+const byte rightDdiBrtSelectPins[3] = {A2, A1, A0};
 DcsBios::SwitchMultiPos rightDdiBrtSelect("RIGHT_DDI_BRT_SELECT", rightDdiBrtSelectPins, 3);
 
 /**
