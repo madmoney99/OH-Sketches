@@ -75,7 +75,7 @@ DcsBios::Switch2Pos avCoolSw("AV_COOL_SW", 15);
 DcsBios::Switch2Pos wingFoldPull("WING_FOLD_PULL", 6);
 DcsBios::Switch3Pos wingFoldRotate("WING_FOLD_ROTATE", 7, 14);
 DcsBios::Switch2Pos hookLever("HOOK_LEVER", 8, true);
-
+DcsBios::RotaryEncoder radaltHeight("RADALT_HEIGHT", "-1600", "+1600", 4, 3);
 void setup() {
   DcsBios::setup();
   //Set Switch Pins to Inputs and Mag Pins to Outputs
