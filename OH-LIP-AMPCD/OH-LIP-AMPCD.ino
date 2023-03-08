@@ -47,7 +47,8 @@
  * @file <AMPCD.ino>
  * @author <@petersawka> <@dnamaster2000>
  * @date <2021-10-12>
- * @brief <Arduino Nano Code for Right DDI Controller>
+ * @brief <Arduino PRO MICRO Code for AMPCD Controller>
+ *edited by TonyG for Pro Micro pinout Dec 2022.
  */
 
 // DCS Bios Configuration - No RS458 Communcation
