@@ -43,9 +43,10 @@
 
 /**
  * @file <Right_DDI.ino>
- * @author <@petersawka> <@dnamaster2000>
- * @date <2021-10-11>
- * @brief <Arduino Nano Code for Right DDI Controller>
+ * @author <Tony Goodale> 
+ * @date <2023-3-13>
+ * @brief <Arduino ProMicro Code for Right DDI Controller>
+ * adapted from Peter Sawka's original Nano code
  */
 
 // DCS Bios Configuration - No RS458 Communcation
@@ -60,7 +61,6 @@
 //Setup the DDI Buttons - Use library from @Balse on Discord - https://github.com/balzreber/TCA9534
 #include "TCA9534.h"
 
-
 TCA9534 ddiButtons[4] = {
   TCA9534(0x23), //Left Row
   TCA9534(0x20), //Top Row
@@ -74,10 +74,11 @@ uint8_t inputRegister[4];
 unsigned long lastDebounceTime[20];
 unsigned long debounceDelay = 10;    // the debounce time; increase if the output flickers
 
-void onInstPnlDimmerChange(unsigned int newValue) {
-    analogWrite(6,map(newValue,0,65535,0,255));
+void onConsoleIntLtChange(unsigned int newValue) {
+      analogWrite(9,  map(newValue, 0, 65535, 0, 255));
 }
-DcsBios::IntegerBuffer instPnlDimmerBuffer(0x7546, 0xffff, 0, onInstPnlDimmerChange);
+
+DcsBios::IntegerBuffer consoleIntLtBuffer(0x7558, 0xffff, 0, onConsoleIntLtChange);
 
 DcsBios::RotaryEncoder rightDdiBrtCtl("RIGHT_DDI_BRT_CTL", "-3200", "+3200", A6, 7);
 DcsBios::RotaryEncoder rightDdiContCtl("RIGHT_DDI_CONT_CTL", "-3200", "+3200", A8, A10);

@@ -45,10 +45,10 @@
 
 /**
  * @file <AMPCD.ino>
- * @author <@petersawka> <@dnamaster2000>
- * @date <2021-10-12>
- * @brief <Arduino PRO MICRO Code for AMPCD Controller>
- *edited by TonyG for Pro Micro pinout Dec 2022.
+ * @author <Tony Goodale> 
+ * @date <2023-3-13>
+ * @brief <Arduino ProMicro Code for AMPCD Controller>
+ * adapted from Peter Sawka's original Nano code
  */
 
 // DCS Bios Configuration - No RS458 Communcation
@@ -82,10 +82,11 @@ char *AMPCD_Btns[] = {"AMPCD_GAIN_SW",
 "AMPCD_CONT_SW"};
 char btnName[20];
 
-void onInstPnlDimmerChange(unsigned int newValue) {
-    analogWrite(6,map(newValue,0,65535,0,100));
+void onConsoleIntLtChange(unsigned int newValue) {
+      analogWrite(9,  map(newValue, 0, 65535, 0, 255));
 }
-DcsBios::IntegerBuffer instPnlDimmerBuffer(0x7546, 0xffff, 0, onInstPnlDimmerChange);
+
+DcsBios::IntegerBuffer consoleIntLtBuffer(0x7558, 0xffff, 0, onConsoleIntLtChange);
 DcsBios::Potentiometer ampcdBrtCtl("AMPCD_BRT_CTL", A0);
 
 DcsBios::Switch3Pos leftDdiCrsSw("LEFT_DDI_CRS_SW", 4, 7);
