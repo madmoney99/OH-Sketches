@@ -67,13 +67,13 @@
 #define hookBypassPin A0
 
 #define jettPin 15
-#define jettSafePin 14
-#define jettRackPin 16
+#define jettSafePin 16
+#define jettRackPin 14
 #define antiskidPin 10
 
-#define jettLPin 6
+#define jettLPin 8
 #define jettRPin 7
-#define jettStoresPin 8
+#define jettStoresPin 6
 #define taxiLightPin 9
 
 #define parkingBPullPin 2
