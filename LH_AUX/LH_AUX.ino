@@ -54,7 +54,7 @@
 
 #include <DcsBios.h>
 //HID Panel for RHAUX PANEL
-#include <Joystick.h>
+//#include <Joystick.h>
 #define NUMBUTTONS 12
 
 /*#define lgUpDownPIn 3
@@ -80,11 +80,11 @@
 //#define parkingRot1Pin 3
 //#define parkingRot2Pin 4
 
-//defining the total [#] of buttons and their pins
-int SwitchOnPin[NUMBUTTONS] = {launchBarPin,flapUpPin,flapDownPin,taxiLightPin,antiskidPin,hookBypassPin,jettPin,jettLPin,jettSafePin,jettRPin,jettRackPin,jettStoresPin};
+/*defining the total [#] of buttons and their pins
+int SwitchOnPin[NUMBUTTONS] = {launchBarPin,flapUpPin,flapDownPin,taxiLightPin,antiskidPin,hookBypassPin,jettPin,jettLPin,jettSafePin,jettRPin,jettRackPin,jettStoresPin,parkingBPullPin,parkingRot1Pin,parkingRot2Pin};
 //Store States
-bool lastBtnState[NUMBUTTONS] = {0,0,0,0,0,0,0,0,0,0,0};
-bool btnState[NUMBUTTONS] = {0,0,0,0,0,0,0,0,0,0,0,0};
+bool lastBtnState[NUMBUTTONS] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+bool btnState[NUMBUTTONS] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
   NUMBUTTONS, 0,                  // Button Count, Hat Switch Count
@@ -92,7 +92,7 @@ Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
   false, false, false,   // No Rx, Ry, or Rz
   false, false,          // No rudder or throttle
   false, false, false);  // No accelerator, brake, or steering
-
+*/
 /* paste code snippets from the reference documentation here */
 /*DcsBios::Switch2Pos gearLever("GEAR_LEVER", lgUpDownPIn);
 DcsBios::Switch2Pos gearDownlockOverrideBtn("GEAR_DOWNLOCK_OVERRIDE_BTN", downlockPIn);
@@ -112,17 +112,17 @@ DcsBios::Switch2Pos hookBypassSw("HOOK_BYPASS_SW", hookBypassPin);
 
 void setup() {
   DcsBios::setup();
-  //Set Switch Pins to Inputs and Mag Pins to Outputs
+  /*Set Switch Pins to Inputs and Mag Pins to Outputs
     for (int i=0;i<NUMBUTTONS;i++){
       pinMode(SwitchOnPin[i], INPUT_PULLUP);
     }
   // Initialize Joystick Library
-  Joystick.begin();
+  Joystick.begin();*/
 }
 
 void loop() {
   DcsBios::loop();
-  for (int i=0;i<NUMBUTTONS;i++)
+  /*for (int i=0;i<NUMBUTTONS;i++)
   {
     int btnState = !digitalRead(SwitchOnPin[i]);
     if (btnState != lastBtnState[i])
@@ -132,5 +132,5 @@ void loop() {
     }
   }
  
-  delay(50);
+  delay(50);*/
 }

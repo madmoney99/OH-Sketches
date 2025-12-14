@@ -1,7 +1,8 @@
 #include <Wire.h>
 #include <TCA9555.h>
 #include <Joystick.h>
-
+#define DCSBIOS_DEFAULT_SERIAL
+#include "DcsBios.h" 
 // Define the TCA9555 objects for each row
 TCA9555 ddiButtons[4] = {
   TCA9555(0x23), // Left Row
@@ -9,6 +10,24 @@ TCA9555 ddiButtons[4] = {
   TCA9555(0x22), // Right Row
   TCA9555(0x21)  // Bottom Row
 };
+
+bool lastBtnState[20];
+bool buttonState[20];
+uint8_t inputRegister[4];
+unsigned long lastDebounceTime[20];
+unsigned long debounceDelay = 10;    // the debounce time; increase if the output flickers
+
+void onConsoleIntLtChange(unsigned int newValue) {
+      analogWrite(9,  map(newValue, 0, 65535, 0, 255));
+}
+
+DcsBios::IntegerBuffer consoleIntLtBuffer(0x7558, 0xffff, 0, onConsoleIntLtChange);
+
+DcsBios::RotaryEncoder rightDdiBrtCtl("RIGHT_DDI_BRT_CTL", "-3200", "+3200", A6, 7);
+DcsBios::RotaryEncoder rightDdiContCtl("RIGHT_DDI_CONT_CTL", "-3200", "+3200", A8, A10);
+
+const byte rightDdiBrtSelectPins[3] = {A2, A1, A0};
+DcsBios::SwitchMultiPos rightDdiBrtSelect("RIGHT_DDI_BRT_SELECT", rightDdiBrtSelectPins, 3);
 
 const int buttonCountPerRow = 5;
 const int totalButtons = 4 * buttonCountPerRow;
@@ -37,6 +56,8 @@ const int ENCODER_BTN4_PIN = 7;   // Encoder 2 DT pin as a push button
 const int LED_MOSFET_PIN = 9;
 
 void setup() {
+  DcsBios::setup();
+  pinMode(6, OUTPUT);
   // Initialize Serial communication for debugging (optional)
   Serial.begin(9600);
 
@@ -76,9 +97,13 @@ void setup() {
 
   // Initialize Joystick Library
   Joystick.begin();
+  DcsBios::setup();
+  pinMode(6, OUTPUT);
+
 }
 
 void loop() {
+  DcsBios::loop();
   // Read and send button states from TCA9555 buttons
   int buttonIndex = 0;
   for (int i = 0; i < 4; i++) {
@@ -100,25 +125,25 @@ void loop() {
   Joystick.setButton(21, !switchState2); // Invert because pull-up
   Joystick.setButton(22, !switchState3); // Invert because pull-up
 
-  // Read encoder push button states
-  int encoderBtn1State = digitalRead(ENCODER_BTN1_PIN);
-  int encoderBtn2State = digitalRead(ENCODER_BTN2_PIN);
-  int encoderBtn3State = digitalRead(ENCODER_BTN3_PIN);
-  int encoderBtn4State = digitalRead(ENCODER_BTN4_PIN);
+  // // Read encoder push button states
+  // int encoderBtn1State = digitalRead(ENCODER_BTN1_PIN);
+  // int encoderBtn2State = digitalRead(ENCODER_BTN2_PIN);
+  // int encoderBtn3State = digitalRead(ENCODER_BTN3_PIN);
+  // int encoderBtn4State = digitalRead(ENCODER_BTN4_PIN);
 
-  // Update Joystick button states for encoder buttons
-  Joystick.setButton(23, !encoderBtn1State); // Encoder 1 CLK button
-  Joystick.setButton(24, !encoderBtn2State); // Encoder 1 DT button
-  Joystick.setButton(25, !encoderBtn3State); // Encoder 2 CLK button
-  Joystick.setButton(26, !encoderBtn4State); // Encoder 2 DT button
+  // // Update Joystick button states for encoder buttons
+  // Joystick.setButton(23, !encoderBtn1State); // Encoder 1 CLK button
+  // Joystick.setButton(24, !encoderBtn2State); // Encoder 1 DT button
+  // Joystick.setButton(25, !encoderBtn3State); // Encoder 2 CLK button
+  // Joystick.setButton(26, !encoderBtn4State); // Encoder 2 DT button
 
-  // Set PWM duty cycle to 25% for LEDs (assuming PWM range is 0-255)
-  int pwmValue = 10; // 25% of 255
-  analogWrite(LED_MOSFET_PIN, pwmValue);
+  // // Set PWM duty cycle to 25% for LEDs (assuming PWM range is 0-255)
+  // int pwmValue = 10; // 25% of 255
+  // analogWrite(LED_MOSFET_PIN, pwmValue);
 
-  // Optional: Print PWM value to Serial for debugging
-  Serial.print("LED PWM Value: ");
-  Serial.println(pwmValue);
+  // // Optional: Print PWM value to Serial for debugging
+  // Serial.print("LED PWM Value: ");
+  // Serial.println(pwmValue);
 
   // Delay a short time to avoid flooding the USB communication
   delay(50);
